@@ -17,7 +17,7 @@
     <nav class="primary-nav" aria-label="Điều hướng chính">
       <a href="#start">Bắt đầu</a>
       <a href="#data-pack">Dữ liệu</a>
-      <a href="#workflow">Sáu thao tác</a>
+      <a href="#workflow">Thao tác CVAT</a>
       <a href="#cvat-tutorial">Làm trong CVAT</a>
       <a href="#quality">Kiểm lỗi</a>
       <a href="#submit">Nộp bài</a>
@@ -30,23 +30,23 @@
     <section class="hero" id="top">
       <div class="hero-copy">
         <p class="eyebrow">HƯỚNG DẪN HỌC VIÊN · CVAT SKELETON · COCO-17</p>
-        <h1>Đặt điểm theo bằng chứng.</h1>
-        <p class="hero-lede">Lab 4 kéo dài <strong>240 phút</strong>. Trang này hướng dẫn <strong>phần cabin 10 ảnh</strong> — khối khoảng 60 phút nằm trong chặng gán nhãn (phút 40–130) của buổi đó: gán 17 điểm cơ thể trên người thật, xử lý phần bị che một cách có lý do, tự kiểm rồi export một bộ dữ liệu có thể kiểm chứng. Đi từng bước, có ảnh chụp CVAT thật, không cần kinh nghiệm lập trình.</p>
+        <h1>Từ ảnh đến pose model.</h1>
+        <p class="hero-lede">Lab 4 kéo dài <strong>240 phút</strong>: dựng skeleton, gán 20 ảnh nhiều người, tự kiểm, export COCO Keypoints, nhận phản hồi, fine-tune model và nộp bài. Trang này là hướng dẫn thao tác trực quan — đi từng bước, có ảnh chụp CVAT thật, không cần kinh nghiệm lập trình.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#start">Bắt đầu từ bước 0</a>
           <a class="button button-secondary" href="#cvat-tutorial">Xem thao tác trong CVAT</a>
         </div>
       </div>
-      <aside class="evidence-board" aria-label="Thông số phần cabin trong buổi lab">
-        <div class="board-title"><span>PHẦN CABIN CỦA LAB 4</span><strong>CVAT 2.74.1</strong></div>
+      <aside class="evidence-board" aria-label="Thông số Lab 4">
+        <div class="board-title"><span>LAB 4 · POSE KEYPOINTS</span><strong>CVAT 2.74.1</strong></div>
         <dl>
-          <div><dt>Cả buổi lab</dt><dd>240 phút</dd></div>
-          <div><dt>Phần cabin này</dt><dd>~60 phút (phút 40–130)</dd></div>
-          <div><dt>Ảnh phải gán ở đây</dt><dd>10</dd></div>
+          <div><dt>Thời lượng</dt><dd>240 phút</dd></div>
+          <div><dt>Task A</dt><dd>20 ảnh · person</dd></div>
+          <div><dt>Task B</dt><dd>5 ảnh · hand + face</dd></div>
           <div><dt>Điểm mỗi người</dt><dd>17</dd></div>
           <div><dt>Định dạng nộp</dt><dd>Keypoints 1.0</dd></div>
         </dl>
-        <div class="lane-meter" aria-label="Hai ảnh tập tay và tám ảnh tự làm"><b>2</b><span>Tập tay</span><i></i><b>8</b><span>Tự làm</span></div>
+        <div class="lane-meter" aria-label="Hai mươi ảnh chính và năm ảnh mở rộng"><b>20</b><span>Task A</span><i></i><b>5</b><span>Task B</span></div>
       </aside>
     </section>
 
@@ -54,33 +54,33 @@
       <div class="section-heading wide-heading">
         <p class="section-code">BƯỚC 0</p>
         <h2 id="start-title">Bạn đang ở đâu, và bắt đầu từ đâu.</h2>
-        <p>Lab 4 dài 240 phút và có hai phần dữ liệu. Trang này hướng dẫn phần <strong>cabin 10 ảnh</strong> — gói ảnh riêng của repo này, còn gọi là <strong>khối cabin</strong>, làm trong <strong>chặng gán nhãn phút 40–130</strong>. Phần còn lại của ngày học dùng bộ 20 ảnh trong repo đề bài <code>Day4-TrackData-Keypoint-Pose</code> và có hướng dẫn riêng ở đó.</p>
+        <p>Bạn chỉ cần đi theo đúng thứ tự bên dưới. Task A là phần được chấm theo pose COCO-17; Task B là bài mở rộng hand/face, export riêng. Bộ ảnh cabin trong trang này là bài luyện privacy/visibility: không trộn vào train hay test của Task A.</p>
       </div>
 
-      <ol class="route-band" aria-label="Vị trí của phần cabin trong ngày học">
-        <li><span>CẢ BUỔI LAB</span><strong>240 phút, bảy chặng</strong><p>20 ảnh nhiều người/ảnh của repo đề bài; tài liệu nằm ở <code>GUIDE.md</code> của repo đó.</p></li>
-        <li class="route-current"><span>BẠN ĐANG Ở ĐÂY</span><strong>10 ảnh cabin, ~60 phút trong chặng 40–130</strong><p>Học cách quyết định khi bằng chứng bị che hoặc bị làm mờ vì lý do riêng tư.</p></li>
-        <li><span>SAU KHI XONG</span><strong>Nộp 3 file</strong><p>Export ZIP, báo cáo visibility và bản review — chi tiết ở mục <a href="#submit">Nộp bài</a>.</p></li>
+      <ol class="route-band" aria-label="Lộ trình Lab 4">
+        <li><span>PHẦN CHÍNH</span><strong>20 ảnh · person · COCO-17</strong><p>Gán tất cả người trong ảnh, export COCO Keypoints rồi chuyển thành nhãn train.</p></li>
+        <li class="route-current"><span>BẠN ĐANG Ở ĐÂY</span><strong>CVAT: thao tác và visibility</strong><p>Học cách tạo skeleton, đặt điểm, phân biệt visible/occluded/outside và lưu đúng dữ liệu.</p></li>
+        <li><span>ĐÓNG VÒNG</span><strong>Review → fine-tune → nộp</strong><p>Nhận kết quả đánh giá, sửa bài, chạy notebook Colab và nộp đủ deliverable.</p></li>
       </ol>
 
       <div class="level-cards" aria-label="Chọn lộ trình theo kinh nghiệm">
         <article>
           <span>MỚI HOÀN TOÀN</span>
           <h3>Chưa từng gán nhãn</h3>
-          <p>Đọc hết trang này theo thứ tự. Dừng lâu ở mục <a href="#visibility">ba trạng thái điểm</a> và làm đủ hai ảnh tập tay trước khi tự làm.</p>
-          <b>Thời gian đề xuất: 75 phút</b>
+          <p>Đọc hết trang này theo thứ tự. Dừng lâu ở mục <a href="#visibility">ba trạng thái điểm</a>, làm hai ảnh warm-up rồi mới gán hàng loạt.</p>
+          <b>Đi theo đủ 7 chặng</b>
         </article>
         <article>
           <span>ĐÃ BIẾT CVAT</span>
           <h3>Từng vẽ bbox hoặc polygon</h3>
           <p>Skeleton khác bbox ở chỗ mỗi điểm có trạng thái riêng. Vào thẳng <a href="#cvat-tutorial">thao tác trong CVAT</a> rồi quay lại luật visibility.</p>
-          <b>Thời gian đề xuất: 60 phút</b>
+          <b>Không bỏ bước tự kiểm</b>
         </article>
         <article>
           <span>ĐÃ BIẾT POSE</span>
           <h3>Từng làm keypoint COCO</h3>
-          <p>Chỉ cần đọc <a href="#cabin-rule">điểm lệch của gói cabin</a> và <a href="#quality">ba lượt tự kiểm</a>. Phần còn lại là quy trình quen thuộc.</p>
-          <b>Thời gian đề xuất: 45 phút</b>
+          <p>Đọc <a href="#cabin-rule">quy tắc privacy của bộ cabin</a>, xác nhận schema Task A/B, rồi dùng <a href="#quality">ba lượt tự kiểm</a>.</p>
+          <b>Không xem tham chiếu trước self-QC</b>
         </article>
       </div>
 
@@ -122,11 +122,11 @@
         <div class="check-panel">
           <p class="check-title">Sáu kiểm tra trước khi vẽ điểm đầu tiên</p>
           <label><input type="checkbox" data-progress> CVAT mở được và đã đăng nhập</label>
-          <label><input type="checkbox" data-progress> Task chứa đúng 10 frame, đánh số 0 đến 9</label>
+          <label><input type="checkbox" data-progress> Task A chứa đúng 20 ảnh và Task B chứa đúng 5 ảnh</label>
           <label><input type="checkbox" data-progress> Label cha là <code>person</code></label>
           <label><input type="checkbox" data-progress> Có đúng 17 sublabel theo thứ tự COCO</label>
-          <label><input type="checkbox" data-progress> Hai ảnh tập tay đứng trước tám ảnh cabin</label>
-          <label><input type="checkbox" data-progress> Đã đọc luật che mặt ở mục dữ liệu</label>
+          <label><input type="checkbox" data-progress> Task A dùng skeleton <code>person</code> 17 điểm COCO theo đúng thứ tự</label>
+          <label><input type="checkbox" data-progress> Đã đọc luật che mặt của bộ luyện cabin ở mục dữ liệu</label>
           <div class="progress-meter" aria-live="polite">
             <span>Tiến độ preflight</span><strong data-progress-label>0/6</strong>
             <i><b data-progress-bar></b></i>
@@ -136,7 +136,7 @@
           <span>DỪNG LẠI KHI</span>
           <h3>Schema khác thì dừng.</h3>
           <p>Nếu tên điểm, thứ tự hoặc số lượng sublabel khác mô tả, đừng tự sửa. Ghi lại frame và khác biệt bạn thấy, báo cho người phụ trách task rồi mới tiếp tục.</p>
-          <a href="CVAT_SETUP.md">Mở mô tả task</a>
+          <a href="GUIDE.md">Mở lộ trình chi tiết</a>
         </aside>
       </div>
     </section>
@@ -145,7 +145,7 @@
       <div class="section-heading wide-heading">
         <p class="section-code">GÓI DỮ LIỆU</p>
         <h2 id="data-title">Học đủ 17 điểm, rồi xử lý ảnh khó.</h2>
-        <p>Hai ảnh đầu dạy đúng tên và đúng vị trí khớp. Tám ảnh sau kiểm tra khả năng quyết định khi bằng chứng bị giới hạn.</p>
+        <p>Task A dùng 20 ảnh nhiều người để tạo nhãn train. Bên dưới là bộ luyện cabin 10 ảnh độc lập: hai ảnh tập đủ COCO-17, sau đó tám ca có bằng chứng bị giới hạn để luyện quyết định visibility.</p>
       </div>
 
       <div class="calibration-grid">
@@ -165,8 +165,8 @@
       </div>
 
       <div class="cabin-intro" id="cabin-rule">
-        <div><span>TÁM ẢNH TỰ LÀM</span><h3>Tám tình huống cabin</h3></div>
-        <p>Năm điểm trên mặt — <code>nose</code>, hai mắt, hai tai — luôn để <strong>Outside</strong> vì lớp che riêng tư đã xoá hết bằng chứng. Các điểm còn lại vẫn phải xét riêng từng ảnh.</p>
+        <div><span>BÀI LUYỆN PRIVACY</span><h3>Tám tình huống cabin</h3></div>
+        <p>Năm điểm trên mặt — <code>nose</code>, hai mắt, hai tai — luôn để <strong>Outside</strong> vì lớp che riêng tư đã xoá hết bằng chứng. Các điểm còn lại vẫn phải xét riêng từng ảnh. Bộ này không dùng để train hoặc test model.</p>
       </div>
       <div class="cabin-gallery">
         <figure class="data-shot"><img src="data/images/d04-03-cabin-real-vehicle-baseline.jpg" width="1200" height="1000" alt="Ảnh cabin xe thật ở điều kiện cơ sở với khuôn mặt đã che" loading="lazy"><figcaption><span>03</span><strong>Cơ sở</strong></figcaption></figure>
@@ -178,7 +178,7 @@
         <figure class="data-shot"><img src="data/images/d04-09-cabin-simulator-glare.jpg" width="640" height="480" alt="Ảnh cabin mô phỏng có ánh sáng chói bên hông" loading="lazy"><figcaption><span>09</span><strong>Chói sáng</strong></figcaption></figure>
         <figure class="data-shot"><img src="data/images/d04-10-cabin-simulator-obstruction.jpg" width="640" height="480" alt="Ảnh cabin mô phỏng có vật cản ống kính" loading="lazy"><figcaption><span>10</span><strong>Vật cản</strong></figcaption></figure>
       </div>
-      <p class="source-note">Nguồn, giấy phép, xử lý riêng tư và mã SHA-256 của từng ảnh nằm trong <a href="data/image-manifest.csv">image manifest</a>, <a href="THIRD_PARTY_NOTICES.md">third-party notices</a> và <a href="RULES.md">quy định làm bài</a>.</p>
+      <p class="source-note">Nguồn, giấy phép, xử lý riêng tư và mã SHA-256 của từng ảnh nằm trong <a href="data/image-manifest.csv">image manifest</a> và <a href="DATA_GOVERNANCE.md">data governance</a>.</p>
     </section>
 
     <section class="schema-section section-pad" id="visibility" aria-labelledby="schema-title">
@@ -230,14 +230,14 @@
         <article><b>v=2</b><h3>Visible</h3><p>Nhìn thấy khớp đủ rõ để đặt điểm ngay tại tâm khớp.</p><code>đặt vào tâm khớp</code></article>
         <article><b>v=1</b><h3>Occluded</h3><p>Khớp bị che, nhưng vẫn suy ra được vị trí hợp lý từ phần cơ thể xung quanh.</p><code>đặt điểm + bật Occluded</code></article>
         <article><b>v=0</b><h3>Outside</h3><p>Khớp nằm ngoài khung ảnh, hoặc không còn bằng chứng nào để suy ra vị trí.</p><code>bật Outside, không đoán bừa</code></article>
-        <aside><strong>Luật riêng của ảnh cabin</strong><p><code>nose</code>, hai mắt và hai tai luôn là <code>v=0</code>. Không đặt điểm vào giữa vùng che.</p></aside>
+        <aside><strong>Luật riêng của ảnh cabin</strong><p><code>nose</code>, hai mắt và hai tai luôn là <code>v=0</code>. Không đặt điểm vào giữa vùng che. Quy tắc này chỉ áp dụng cho bộ luyện cabin, không áp lên Task A.</p></aside>
       </div>
     </section>
 
     <section class="workflow-section section-pad" id="workflow" aria-labelledby="workflow-title">
       <div class="section-heading wide-heading">
         <h2 id="workflow-title">Sáu thao tác từ ảnh đến export.</h2>
-        <p>Bản đồ tổng quát của buổi lab. Mỗi thẻ có ảnh chụp CVAT thật — bấm vào ảnh để phóng to, bấm tiêu đề để xem hướng dẫn chi tiết từng cú bấm.</p>
+        <p>Đây là chuỗi thao tác dùng cho cả Task A và Task B. Mỗi thẻ có ảnh chụp CVAT thật — bấm vào ảnh để phóng to, bấm tiêu đề để xem hướng dẫn chi tiết từng cú bấm.</p>
       </div>
       <ol class="workflow-list">
         <li>
@@ -245,7 +245,7 @@
             <span>01</span>
             <div>
               <h3><a href="#cvat-step-1">Mở đúng job</a></h3>
-              <p>Xác nhận 10 frame, label <code>person</code> và 17 sublabel. Frame 0 và 1 là hai ảnh tập tay.</p>
+              <p>Xác nhận đúng task, label và số ảnh: Task A có <code>person</code> + 17 sublabel; Task B có skeleton hand/face riêng.</p>
               <code>Tasks → task → job</code>
             </div>
           </div>
@@ -359,10 +359,10 @@
           <div class="step-copy">
             <p class="step-index">Bước 1</p>
             <h3>Mở job và kiểm thanh trên</h3>
-            <p>Thanh trên cùng cho biết bạn đang ở ảnh nào. Bên trái là <strong>Menu</strong> và <strong>Save</strong>; ở giữa là các nút chuyển frame; bên phải là tên file và ô số frame.</p>
+            <p>Thanh trên cùng cho biết bạn đang ở ảnh nào. Bên trái là <strong>Menu</strong> và <strong>Save</strong>; ở giữa là các nút chuyển frame; bên phải là tên file và ô số frame. Ảnh dưới là task luyện cabin, nên số frame chỉ là ví dụ — Task A của bạn có 20 ảnh.</p>
             <ul class="step-check">
-              <li>Ô số frame chạy được từ <code>0</code> đến <code>9</code></li>
-              <li>Frame 0 và 1 có tên bắt đầu bằng <code>d04-01</code> và <code>d04-02</code></li>
+              <li>Task A có 20 ảnh; Task B có 5 ảnh. Số frame có thể bắt đầu khác tùy job được giao.</li>
+              <li>Tên file trên thanh trên trùng với ảnh bạn đang gán</li>
               <li>Không bấm <strong>Finish the job</strong> khi chưa gán xong</li>
             </ul>
             <p class="step-note">Mẹo: bấm thẳng biểu tượng <strong>Save</strong>. Phím tắt <kbd>Ctrl</kbd>+<kbd>S</kbd> chỉ ăn khi con trỏ đang ở vùng ảnh.</p>
@@ -380,7 +380,7 @@
           <div class="step-copy">
             <p class="step-index">Bước 2</p>
             <h3>Kiểm label trước khi vẽ</h3>
-            <p>Ở panel bên phải, mở tab <strong>Labels</strong>. Task của buổi lab chỉ được có <strong>một</strong> label cha tên <code>person</code>; 17 điểm nằm bên trong label đó chứ không phải 17 label rời.</p>
+            <p>Ở panel bên phải, mở tab <strong>Labels</strong>. Với Task A, chỉ có <strong>một</strong> label cha tên <code>person</code>; 17 điểm nằm bên trong label đó chứ không phải 17 label rời. Task B có schema riêng.</p>
             <ul class="step-check">
               <li><code>Items: 1</code> và dòng duy nhất là <code>person</code></li>
               <li>Tab <strong>Objects</strong> đang trống nếu bạn chưa vẽ gì</li>
@@ -406,7 +406,7 @@
               <li>Một cú bấm lên ảnh sẽ tạo cả cụm 17 điểm cùng lúc</li>
               <li>Sau đó bạn kéo từng điểm về đúng vị trí</li>
             </ul>
-            <p class="step-note">Đặt một người một skeleton. Ảnh cabin chỉ gán người lái; người lọt vào rìa ảnh không thuộc phần bài này.</p>
+            <p class="step-note">Task A: đặt một người một skeleton và gán <strong>tất cả người nhìn thấy</strong>. Bộ luyện cabin bên dưới chỉ gán người lái; người lọt vào rìa ảnh không thuộc phần luyện đó.</p>
           </div>
           <figure class="shot">
             <button class="shot-zoom" type="button" data-zoom data-zoom-note="Bước 3 — bảng Draw new skeleton. Label giữ person, bấm Shape. Nút Track ngay bên cạnh dành cho video và sẽ tạo sai loại đối tượng.">
@@ -443,9 +443,9 @@
             <h3>Gán trạng thái cho từng điểm</h3>
             <p>Chọn một điểm rồi đặt trạng thái: <strong>Visible</strong> khi nhìn thấy khớp, <strong>Occluded</strong> (phím <kbd>q</kbd>) khi bị che nhưng vẫn suy ra được, <strong>Outside</strong> (phím <kbd>o</kbd>) khi ra ngoài khung hoặc mất sạch bằng chứng.</p>
             <ul class="step-check">
-              <li>Ảnh cabin: năm điểm trên mặt luôn <strong>Outside</strong></li>
+              <li>Chỉ ở bộ luyện cabin: năm điểm trên mặt luôn <strong>Outside</strong></li>
               <li>Không dùng <strong>Hidden</strong> (<kbd>h</kbd>) — trạng thái này không được lưu vào export</li>
-              <li>Cả bài không có điểm nào <code>v=1</code> là dấu hiệu bạn đang né điểm khó</li>
+              <li>Nếu cả Task A không có điểm nào <code>v=1</code>, xem lại vì có thể bạn đang né điểm khó</li>
             </ul>
           </div>
           <figure class="shot shot-diagram shot-diagram-wide">
@@ -485,16 +485,17 @@
 
     <section class="timeline-section section-pad" aria-labelledby="timeline-title">
       <div class="timeline-heading">
-        <div class="section-heading"><h2 id="timeline-title">Phần cabin: ~60 phút trong chặng 40–130.</h2></div>
-        <p>Khung dưới đây là <strong>ước lượng</strong> cho phần cabin. Nó <strong>nằm trong chặng gán nhãn (phút 40–130) của buổi lab 240 phút</strong>, không phải một buổi thêm: mốc phút bên dưới tính từ lúc bạn bắt đầu phần cabin. Bảy chặng và chín đầu việc của cả buổi nằm ở <code>GUIDE.md</code> của repo đề bài.</p>
+        <div class="section-heading"><h2 id="timeline-title">Bảy chặng, 240 phút.</h2></div>
+        <p>Đi hết các chặng theo thứ tự. Bạn chỉ chuyển sang đánh giá sau khi đã khóa nhãn; bộ cabin là bài luyện thêm trong chặng gán nhãn, không làm thay Task A.</p>
       </div>
       <ol class="timeline">
-        <li><time>00–10</time><strong>Hiểu luật</strong><span>Preflight, xem 17 điểm và luật <code>v=0</code> dưới vùng che</span></li>
-        <li><time>10–20</time><strong>Tập tay</strong><span>Hai ảnh có hướng dẫn, đủ 17 điểm gồm 5 điểm mặt</span></li>
-        <li><time>20–40</time><strong>Tự làm</strong><span>Đọc gói ảnh rồi gán tám ảnh cabin</span></li>
-        <li><time>40–50</time><strong>Tự kiểm</strong><span>Ba lượt kiểm, export, chạy công cụ kiểm</span></li>
-        <li><time>50–56</time><strong>Đối chiếu</strong><span>Gợi ý của model (tuỳ chọn) và nhận xét của bạn cùng nhóm</span></li>
-        <li><time>56–60</time><strong>Đóng vòng</strong><span>Sửa, export lại và kiểm bộ nộp</span></li>
+        <li><time>00–20</time><strong>Dựng schema</strong><span>Kiểm skeleton, label và luật visibility</span></li>
+        <li><time>20–40</time><strong>Warm-up</strong><span>Hai ảnh đầu, đủ 17 keypoint và trái/phải</span></li>
+        <li><time>40–130</time><strong>Gán nhãn</strong><span>Task A 20 ảnh; Task B 5 ảnh export riêng</span></li>
+        <li><time>130–150</time><strong>Khóa nhãn</strong><span>Tự kiểm, export COCO, convert và kiểm cấu trúc</span></li>
+        <li><time>150–190</time><strong>Đánh giá &amp; sửa</strong><span>Nhận kết quả, đọc OKS, rework có lý do</span></li>
+        <li><time>190–230</time><strong>Colab</strong><span>Fine-tune <code>yolo26n-pose.pt</code> 80 epoch, đánh giá test set</span></li>
+        <li><time>230–240</time><strong>Nộp bài</strong><span>Kiểm đủ artifact, báo cáo và peer review</span></li>
       </ol>
     </section>
 
@@ -531,21 +532,26 @@
     <section class="submit-section section-pad" id="submit" aria-labelledby="submit-title">
       <div class="section-heading wide-heading">
         <p class="section-code">NỘP BÀI</p>
-        <h2 id="submit-title">Ba file, hai lớp kiểm chứng.</h2>
-        <p>Công cụ kiểm chỉ xác nhận cấu trúc file đúng. Phần đánh giá vị trí khớp và chất lượng quyết định vẫn do người đọc bài làm.</p>
+        <h2 id="submit-title">Chín deliverable, hai lớp kiểm chứng.</h2>
+        <p>Công cụ kiểm chỉ xác nhận cấu trúc file đúng. Phần đánh giá vị trí khớp và chất lượng quyết định vẫn dựa trên bằng chứng trong annotation và báo cáo của bạn.</p>
       </div>
       <div class="submit-layout">
         <div class="package-tree">
-          <span>submission/</span>
-          <pre><code>COCO_KEYPOINTS_EXPORT.zip
-VISIBILITY_REPORT.csv
-POSE_REVIEW.md</code></pre>
-          <p>Không thêm file model, ảnh gốc, đáp án hay file tạm.</p>
+          <span>TRƯỚC KHI NỘP</span>
+          <pre><code>annotations/coco_keypoints/
+annotations/face_hand/
+dataset/labels/train/
+outputs/visibility_report.json
+outputs/eval_vs_gold.json
+outputs/eval_model.json
+reports/REPORT.md
+reports/review_partner.md</code></pre>
+          <p>Không thêm ảnh gốc, câu trả lời tham chiếu, file model trọng số hay file tạm.</p>
         </div>
         <ol class="submit-steps">
-          <li><b>1</b><div><strong>Tạo báo cáo visibility</strong><div class="cmd-row"><code>python3 scripts/validate-submission.py --export COCO_KEYPOINTS_EXPORT.zip --write-report VISIBILITY_REPORT.csv</code><button class="copy-button" type="button" data-copy="python3 scripts/validate-submission.py --export COCO_KEYPOINTS_EXPORT.zip --write-report VISIBILITY_REPORT.csv">Sao chép</button></div><span>Chạy trong cửa sổ lệnh, tại thư mục repo. Lệnh đọc file ZIP bạn vừa tải và tạo ra file CSV.</span></div></li>
-          <li><b>2</b><div><strong>Viết bản review</strong><span>Copy <code>reports/POSE_REVIEW_TEMPLATE.md</code> thành <code>POSE_REVIEW.md</code>, rồi đóng hết các mục TODO và finding.</span></div></li>
-          <li><b>3</b><div><strong>Kiểm bộ nộp</strong><div class="cmd-row"><code>python3 scripts/validate-submission.py --submission-dir submission</code><button class="copy-button" type="button" data-copy="python3 scripts/validate-submission.py --submission-dir submission">Sao chép</button></div><span>Kết quả PASS nghĩa là đủ file và đúng cấu trúc — chưa nói gì về độ chính xác của điểm.</span></div></li>
+          <li><b>1</b><div><strong>Convert và kiểm nhãn train</strong><div class="cmd-row"><code>python3 tools/coco_kp_to_yolo_pose.py --coco annotations/coco_keypoints/person_keypoints_default.json --out dataset/labels/train</code><button class="copy-button" type="button" data-copy="python3 tools/coco_kp_to_yolo_pose.py --coco annotations/coco_keypoints/person_keypoints_default.json --out dataset/labels/train">Sao chép</button></div><span>Sau đó chạy <code>python3 tools/check_pose_labels.py --images dataset/images/train --labels dataset/labels/train</code>. Sửa trong CVAT, không sửa JSON bằng tay.</span></div></li>
+          <li><b>2</b><div><strong>Tạo visibility report và review</strong><div class="cmd-row"><code>python3 tools/visibility_report.py --labels dataset/labels/train --out outputs/visibility_report.json --markdown reports/visibility_report.md</code><button class="copy-button" type="button" data-copy="python3 tools/visibility_report.py --labels dataset/labels/train --out outputs/visibility_report.json --markdown reports/visibility_report.md">Sao chép</button></div><span>Hoàn thành <code>GUIDELINE_MINI.md</code>, <code>reports/REPORT.md</code> và <code>reports/review_partner.md</code>.</span></div></li>
+          <li><b>3</b><div><strong>Đánh giá, Colab, rồi nộp</strong><span>Sau khi protected release được mở cho lớp, chạy evaluator để tạo <code>outputs/eval_vs_gold.json</code>. Mở notebook Colab, chạy fine-tune 80 epoch để tạo <code>outputs/eval_model.json</code>, rồi kiểm lại danh sách bên trái.</span></div></li>
         </ol>
       </div>
       <div class="decision-row">
@@ -602,9 +608,9 @@ POSE_REVIEW.md</code></pre>
           <button type="button" class="lightbox-close" data-lightbox-close>Đóng ✕</button>
         </div>
       </div>
-      <div class="lightbox-stage"><img alt="" data-lightbox-image></div>
       <figcaption data-lightbox-note></figcaption>
-      <p class="lightbox-hint">Bấm ra ngoài ảnh, bấm <strong>Đóng</strong> hoặc nhấn <kbd>Esc</kbd> để quay lại hướng dẫn. Dùng <kbd>←</kbd> <kbd>→</kbd> để xem ảnh khác.</p>
+      <p class="lightbox-hint">Hướng dẫn này luôn hiện khi phóng to. Bấm ra ngoài ảnh, bấm <strong>Đóng</strong> hoặc nhấn <kbd>Esc</kbd> để quay lại trang; dùng <kbd>←</kbd> <kbd>→</kbd> để xem ảnh khác.</p>
+      <div class="lightbox-stage"><img alt="" data-lightbox-image></div>
     </figure>
   </div>
 
@@ -612,11 +618,9 @@ POSE_REVIEW.md</code></pre>
     <div><strong>DAY 04 · POSE KEYPOINTS</strong><p>COCO-17, quyết định về trạng thái điểm và sửa bài dựa trên bằng chứng.</p></div>
     <nav aria-label="Tài liệu liên quan">
       <a href="GUIDE.md">Bản chữ</a>
-      <a href="CVAT_SETUP.md">Dựng task CVAT</a>
-      <a href="SUBMISSION.md">Nộp bài</a>
+      <a href="GUIDE.md">Lộ trình chi tiết</a>
       <a href="RUBRIC.md">Thang điểm</a>
-      <a href="RULES.md">Quy định làm bài</a>
-      <a href="THIRD_PARTY_NOTICES.md">Nguồn dữ liệu</a>
+      <a href="DATA_GOVERNANCE.md">Data governance</a>
     </nav>
   </footer>
 </body>

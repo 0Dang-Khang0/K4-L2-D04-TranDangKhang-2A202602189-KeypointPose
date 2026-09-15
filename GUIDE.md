@@ -1,108 +1,240 @@
-# Hướng dẫn gán nhãn COCO-17 — khối cabin
+# GUIDE Ngày 4 - làm theo đúng thứ tự này
 
-Tài liệu này phục vụ **khối cabin ~60 phút** nằm trong chặng gán nhãn (phút 40-130) của buổi
-lab 240 phút. Phần còn lại của route nằm ở `GUIDE.md` của repo đề bài
-`Day4-TrackData-Keypoint-Pose`; repo này không thay thế nó.
+Bốn giờ, bảy chặng. Mốc thời gian là mốc thật, không phải gợi ý: chặng 5 chỉ mở
+sau khi cả lớp đã khoá nhãn.
 
-Khối cabin trả lời một câu hỏi mà bộ ảnh COCO của repo đề bài không trả lời được: **khi khuôn
-mặt bị privacy mask, bạn xử lý 5 điểm mặt thế nào.** Đọc mục 0b trước khi đặt chấm đầu tiên.
+| Mốc | Chặng | Bạn làm gì |
+| --- | --- | --- |
+| 0:00-0:20 | 1 | Dựng skeleton label, tạo task CVAT |
+| 0:20-0:40 | 2 | Warm-up: gán 2 ảnh, tự soi bằng `visualize_pose.py` |
+| 0:40-2:10 | 3 | Gán 18 ảnh còn lại + bộ face/hand cho 5 ảnh |
+| 2:10-2:30 | 4 | Ba lượt kiểm, visibility report, kiểm chéo, **khoá nhãn** |
+| 2:30-3:10 | 5 | Nhận gold, chấm bằng OKS, rework |
+| 3:10-3:50 | 6 | Colab: fine-tune, visualize, đánh giá |
+| 3:50-4:00 | 7 | Báo cáo, commit, push |
 
-## 0. Luật chung — giống repo đề bài
+---
 
-Bốn luật dưới đây giống hệt repo đề bài, đừng học lệch:
+## Chặng 1 - Dựng skeleton label (0:00-0:20)
 
-- `left_*` và `right_*` là bên trái/phải của **người trong ảnh**, không phải bên màn hình.
-- **Mọi người trong ảnh đều đủ 17 điểm.** Điểm không dùng được thì gắn cờ, không xoá.
-- `v=2` nhìn thấy; `v=1` bị che nhưng **còn trong khung** — vẫn đặt chấm ước lượng, bật `Occluded` (`q`);
-  `v=0` **ra ngoài mép ảnh** — không đặt chấm, bật `Outside` (`o`).
-- Không dùng `Hidden` (`h`): nó không được lưu, điểm vẫn xuất ra `v=2` ở vị trí cũ mà không có cảnh báo.
-- Bấm thẳng biểu tượng **Save** trên toolbar; `Ctrl+S` không nhận nếu focus không ở canvas.
+**Làm một lần, dùng cho cả hai task.** Topology bị khoá ngay khi task được tạo:
+đặt thiếu một điểm hay sai thứ tự là làm lại cả task từ đầu.
 
-## 0b. Điểm lệch của khối cabin — đọc kỹ
+**Đừng đặt tay 17 điểm.** Gõ tay 17 cái tên là 17 cơ hội gõ sai, và sai một chữ
+trong `left_wrist` thì `coco_kp_to_yolo_pose.py` báo lỗi, bạn phải export lại.
+Có ba đường, chọn đường nào có sẵn trên CVAT bạn đang dùng:
 
-Trên 8 ảnh cabin, `nose`, `left_eye`, `right_eye`, `left_ear`, `right_ear` bắt buộc `Outside`
-(`v=0`) vì privacy mask đã xoá evidence; **không** đặt điểm vào giữa mask. Theo luật của repo đề bài
-thì những khớp này lẽ ra là `v=1`. Đây là mâu thuẫn có chủ ý và là lý do nhãn khối cabin **không bao
-giờ** được trộn vào tập train của repo đề bài.
+**Cách A — dán JSON (nhanh nhất, chạy ở mọi bản CVAT).** Gói tài sản lớp học có file
+`labels_day4.json`.
 
-Trên 2 ảnh calibration, đặt đủ 17 điểm theo evidence, gồm cả 5 điểm mặt — đó là chỗ duy nhất
-trong pack này chấm tọa độ facial landmark.
+1. Tạo **Project** mới → ở khung Labels, mở tab **Raw**.
+2. Dán toàn bộ nội dung `labels_day4.json` vào, bấm **Done**.
+3. Xong: có luôn cả ba skeleton `person` (17 điểm), `hand` (21), `face` (5),
+   đúng tên đúng thứ tự COCO.
+4. Tạo **Task** bên trong project đó và upload 20 ảnh `dataset/images/train/`.
 
-Mỗi ảnh cabin chỉ annotate driver ROI; người/cánh tay còn sót ở rìa sau crop không thuộc target.
-Ở route chính thì ngược lại: **mọi người trong ảnh đều được gán**, kể cả ảnh 2-3 người.
+**Cách B — upload file `.SVG`** (đúng cách slide 29 mô tả). Gói tài sản lớp học có
+`skeleton_person_17.svg`.
 
-Không xem YOLO, reference hoặc bài peer trước khi kết thúc independent attempt và self-QC.
+1. Ở khung Labels, bấm **Setup skeleton**.
+2. Trong màn hình đó, bấm nút **Upload a skeleton from SVG** (icon mũi tên lên,
+   góc trên bên phải khung vẽ) và chọn file `.svg`.
+3. Đặt tên label là `person`, bấm **Continue**/**Done**.
+4. Lặp lại cho `skeleton_hand_21.svg` và `skeleton_face_5.svg` nếu cần bộ face/hand.
 
-## 1. Preflight
+**Cách C — `From model -> Human pose estimation`.** CVAT dựng sẵn 17 điểm đúng
+chuẩn. **Chỉ có trên app.cvat.ai** hoặc bản self-hosted đã cài serverless (Nuclio);
+trên CVAT cài trần thì danh sách model rỗng và nút này không dùng được.
 
-1. Đối chiếu task với `CVAT_SETUP.md`.
-2. Đếm 17 sublabel và kiểm `nose` ở index 0, `left_ankle` 15, `right_ankle` 16.
-3. Mở đủ 10 ảnh, đối chiếu tên file và split 2 ảnh `guided` + 8 ảnh `independent` trong `data/image-manifest.csv`.
-4. Không tiếp tục nếu task đã tồn tại với schema khác; CVAT không cho sửa skeleton của task đã tạo.
+Dù đi đường nào, sau khi xong hãy vào **Setup skeleton → Download skeleton as SVG**
+và cất file lại. Mọi task sau chỉ việc Upload lại — kể cả task buổi tới.
 
-## 2. Guided image
+Thứ tự đúng, từ đầu xuống chân, trái trước phải sau:
 
-Làm hai ảnh `d04-01-calibration-full-coco17-frontal.jpg` và `d04-02-calibration-raised-arm-coco17.jpg`.
-
-1. Draw new skeleton → **Shape** → `person`.
-2. Đặt đủ 17 node, dùng hai ảnh này để calibration tên, topology, body-relative left/right và vị trí 5 facial node.
-3. Joint bị che nhưng còn trong khung → `Occluded`; joint ngoài khung hoặc bị mask làm mất evidence → `Outside`.
-4. Đọc tên từng điểm ở sidebar để bắt lỗi left/right.
-5. Save, reload và kiểm skeleton vẫn giữ state.
-
-Checkpoint B: giải thích được vì sao một điểm là `v=1`, không chỉ thao tác đúng nút.
-
-## 3. Independent pack
-
-Làm tám file `d04-03-cabin` đến `d04-10-cabin` độc lập, không mở diagnostic. Pack cố ý trộn
-real-vehicle/simulator, object interaction, forward lean, low-light, glare và obstruction. Năm
-facial node và mọi lower-body point ngoài khung phải là `Outside`; không kéo điểm vào mép ảnh để
-“làm đủ”. Không nhập source behaviour class vào CVAT.
-
-Trước khi annotate, dự đoán image nào `usable`, `usable-with-limitations` hoặc `needs-review`.
-Sau self-QC, điền quyết định cuối vào `POSE_REVIEW.md`, nêu evidence limitation, keypoint bị ảnh
-hưởng và action `keep/relabel/recollect`. Đây là quyết định về chất lượng dữ liệu pose, không
-phải phân loại trạng thái tài xế.
-
-## 4. Self-QC ba lượt
-
-Thứ tự rẻ trước, đắt sau — giống chặng 4 của route chính:
-
-1. **Hình dáng:** đủ 17 tên, không swap trái/phải, edge nối hợp lý, không có xương kéo sang cơ thể khác.
-2. **Đếm:** tách occluded khỏi outside; không dùng `v=0` để né điểm khó. Dấu hiệu hỏng: cả bài
-   không có một khớp `v=1` nào.
-3. **Phóng to:** chỉ 2-3 người mẫu, kiểm chấm lệch khỏi tâm khớp.
-
-Ghi evidence vào bản copy của `reports/POSE_REVIEW_TEMPLATE.md` trước khi được mở diagnostic.
-
-## 5. Export và audit
-
-Task → Export task dataset → **COCO Keypoints 1.0** → Include images tùy chọn. Không đổi tên JSON
-bên trong ZIP và không chỉnh JSON bằng tay.
-
-```bash
-python3 tools/validate-submission.py --export COCO_KEYPOINTS_EXPORT.zip --write-report VISIBILITY_REPORT.csv
+```text
+0  nose
+1  left_eye        2  right_eye
+3  left_ear        4  right_ear
+5  left_shoulder   6  right_shoulder
+7  left_elbow      8  right_elbow
+9  left_wrist     10  right_wrist
+11 left_hip       12  right_hip
+13 left_knee      14  right_knee
+15 left_ankle     16  right_ankle
 ```
 
-Structural PASS không thay self-QC.
+---
 
-Nếu bạn đã clone repo đề bài `Day4-TrackData-Keypoint-Pose`, có thể chạy thêm hai script
-`coco_kp_to_yolo_pose.py` và `check_pose_labels.py` **của repo đó** trên chính export này để đối
-chiếu toolchain. Chúng sẽ cảnh báo 5 facial node `v=0` của khối cabin — đó là **đúng theo mục 0b**,
-không phải lỗi người gán. Hai script này không có trong repo này.
+## Chặng 2 - Warm-up hai ảnh (0:20-0:40)
 
-## 6. Diagnostic/peer/rework
+Gán `train_01` và `train_02` thôi, rồi dừng lại kiểm ngay. Bắt lỗi thao tác ở phút 30
+rẻ hơn bắt ở phút 130.
 
-Sau self-QC mới được chạy YOLO diagnostic. So sánh theo từng điểm; bất đồng chỉ tạo câu hỏi,
-không biến model thành đáp án. Reviewer ghi ít nhất một finding, hoặc một no-defect row có ba pass
-cụ thể. Tác giả quyết định `fixed`, `not-a-defect` hoặc `needs-review`, sửa trên CVAT và export
-lại nếu annotation đổi.
+1. Thanh công cụ -> **Draw new skeleton** -> chọn **Shape** (đây là ảnh tĩnh, không phải clip).
+2. Vẽ: CVAT thả cả bộ 17 điểm xuống trong một cái box.
+3. Kéo/xoay cả box cho khớp thô **trước**, rồi mới kéo từng điểm.
+4. Đặt cờ cho mọi điểm không nhìn thấy rõ (xem bảng dưới), rồi bấm **Save** trên toolbar.
+5. Export thử: **Export -> COCO Keypoints 1.0**. Giải nén, rồi:
 
-## Recovery
+```bash
+python3 tools/coco_kp_to_yolo_pose.py --coco <file>.json --out dataset/labels/train
+python3 tools/check_pose_labels.py --images dataset/images/train --labels dataset/labels/train
+python3 tools/visualize_pose.py --images dataset/images/train \
+    --labels dataset/labels/train --out outputs/vis_train
+```
 
-- Sai schema: tạo task mới; không vá tên sau export.
-- Không thấy COCO Keypoints: xác nhận label cha là `skeleton`, không phải 17 label point rời.
-- Export ra file chỉ có `bbox`, không có `keypoints`: đã chọn nhầm **COCO 1.0** hoặc **YOLO 1.1**. Export lại.
-- Validator báo sai filename: import đúng ảnh manifest, không đổi tên local.
-- `num_keypoints` mismatch: kiểm state Outside/Occluded và export lại; không sửa JSON.
-- Diagnostic lỗi tải model: bỏ qua; core không phụ thuộc model.
+Mở `outputs/vis_train/train_01.jpg`. Xanh = bên trái cơ thể, cam = bên phải, vàng = bị che.
+Hai màu cắt chéo nhau ở vai hay hông => bạn vừa đảo trái/phải.
+
+> **Bấm thẳng vào biểu tượng Save trên toolbar.** `Ctrl+S` không nhận nếu con trỏ
+> không ở trên canvas - đây là lỗi mất nhãn phổ biến nhất của Ngày 3.
+
+### Ba trạng thái, hai câu hỏi
+
+| Bạn thấy khớp đó không? | Nó còn trong khung hình không? | Chọn | Trong CVAT | Ra file |
+| --- | --- | --- | --- | ---: |
+| Có | - | nhìn thấy rõ | không tick gì | `v = 2` |
+| Không, bị che | Còn | **vẫn đặt chấm** ở vị trí ước lượng | tick **Occluded** (`q`) | `v = 1` |
+| Không, ra ngoài mép ảnh | Không | **không đặt chấm** | tick **Outside** (`o`) | `v = 0` |
+
+**Không bao giờ dùng `h` (Hidden).** Nó trông y hệt Outside trên màn hình nhưng
+không được lưu - điểm đó vẫn xuất ra `v = 2` ở vị trí cũ, sai mà không có một
+dòng cảnh báo nào.
+
+Di chuột lên **một điểm** rồi bấm phím: chỉ điểm đó đổi cờ. Di chuột lên **box bao**
+rồi bấm: cả skeleton đổi cờ.
+
+---
+
+## Chặng 3 - Gán 18 ảnh còn lại (0:40-2:10)
+
+Khoảng 4 phút một ảnh. Nếu đang mất 8 phút cho một ảnh, bạn đang chỉnh đến từng pixel -
+dừng lại. **Đúng khớp quan trọng hơn đúng pixel:** model chỉ trả lời chính xác được
+đến khoảng 4 pixel, còn sai trái/phải thì nó học sai vĩnh viễn.
+
+Luật bắt buộc:
+
+1. **Luôn đủ 17 điểm cho mọi người.** Điểm không dùng được thì gắn cờ, không bao giờ xoá.
+2. **Trái/phải tính theo cơ thể người, không theo bức ảnh.** Người quay mặt về phía bạn
+   thì tay trái của họ xuất hiện ở bên phải ảnh - vẫn ghi `left_wrist`.
+   Cách kiểm trong 1 giây: tự tưởng tượng bạn đứng vào chỗ người đó rồi giơ tay trái lên.
+3. **Làm xong hẳn một người rồi mới sang người kế tiếp.** Đây là cách duy nhất tránh lỗi
+   "nhầm người".
+4. **Người quá nhỏ**: bộ ảnh này đã được chọn sao cho mọi người trong ảnh đều đủ lớn để gán.
+   Nếu bạn thấy một ca mình phân vân, đó là một ca mơ hồ thật - ghi vào `GUIDELINE_MINI.md`.
+5. **Hông**: không nhìn thấy được trên bất kỳ người mặc quần áo nào. Nó là ước lượng giải phẫu.
+   Nhóm bạn phải thống nhất một luật và ghi vào `GUIDELINE_MINI.md`, kèm một ảnh mẫu.
+
+### Bộ thứ hai: face/hand cho 5 ảnh
+
+Dựng **một skeleton label riêng**, topology riêng, **không trộn** vào bộ 17 điểm:
+
+- 21 điểm một bàn tay (MediaPipe / COCO-WholeBody)
+- 5 điểm mặt rút gọn: hai mắt, mũi, hai khoé miệng
+
+Tạo một task CVAT thứ hai với 5 ảnh bạn chọn (ưu tiên ảnh thấy rõ bàn tay trên tay lái).
+Export riêng, đặt vào `annotations/face_hand/`. Bộ này **không** được chấm bằng OKS -
+không có gold cho nó - nhưng nó nằm trong reviewer checklist và trong rubric.
+
+> Bàn tay một bên đã là 21 điểm, hơn cả bộ thân 17 điểm. Đó là lý do bộ này chỉ làm
+> 5 ảnh, không phải 20.
+
+---
+
+## Chặng 4 - Ba lượt kiểm rồi khoá nhãn (2:10-2:30)
+
+Rẻ trước, đắt sau. Đừng đảo thứ tự.
+
+**Lượt 1 - hình dáng (1 giây/người).** Bật đường nối, không phóng to.
+
+```bash
+python3 tools/visualize_pose.py --images dataset/images/train \
+    --labels dataset/labels/train --out outputs/vis_train
+```
+
+Bắt: đảo trái/phải (xương cắt chéo ở thân), nhầm người (xương kéo sang cơ thể bên cạnh).
+Một bộ xương người gần như không bao giờ tự cắt chéo ở thân - trừ khi người đó đang vặn
+mình. Thấy cắt chéo thì **nghi ngờ và kiểm lại pose trước**, rồi mới sửa.
+
+**Lượt 2 - đếm (không cần mắt).**
+
+```bash
+python3 tools/check_pose_labels.py --images dataset/images/train --labels dataset/labels/train
+python3 tools/visibility_report.py --labels dataset/labels/train \
+    --out outputs/visibility_report.json --markdown reports/visibility_report.md
+```
+
+Bắt: thiếu điểm, cờ sai, và **xoá khớp bị che**. Dấu hiệu của lỗi cuối: cả bài không có
+một khớp `v = 1` nào, hoặc một người nằm gọn giữa ảnh mà lại có 5-6 khớp `v = 0`.
+
+**Lượt 3 - phóng to (chỉ vài người mẫu).** Zoom 200%, chọn 2-3 người. Bắt: chấm lệch khỏi khớp.
+Đây là lượt đắt nhất nên làm cuối cùng và làm ít.
+
+**Kiểm chéo với bạn cùng nhóm - so bảng đếm TRƯỚC, so hình sau:**
+
+```bash
+python3 tools/visibility_report.py --labels dataset/labels/train \
+    --compare ../ban_cung_nhom/dataset/labels/train --markdown reports/visibility_compare.md
+```
+
+Khớp nào lệch `%v=1` nhiều nhất là khớp guideline của nhóm chưa nói rõ. Sửa guideline
+trước, sửa nhãn sau. Điền `reports/REVIEWER_CHECKLIST.md` cho bài của người kia và ghi
+lỗi tìm được vào `reports/review_partner.md`.
+
+**Khoá nhãn.** Commit. Từ đây trở đi không sửa nhãn nữa cho tới khi nhận gold.
+
+---
+
+## Chặng 5 - Chấm với gold và rework (2:30-3:10)
+
+Protected release mở sau khi cả lớp đã khoá. Giải nén sao cho có `gold/labels/train/*.txt`.
+
+```bash
+python3 tools/evaluate_pose_annotations.py --pred dataset/labels/train \
+    --gold gold/labels/train --images dataset/images/train --out outputs/eval_vs_gold.json
+```
+
+Script trả về OKS và một **danh sách lỗi đã gọi tên**. Sửa theo đúng thứ tự này:
+
+| Ưu tiên | Lỗi | Sửa thế nào |
+| ---: | --- | --- |
+| 1 | Đảo trái/phải | Đổi lại hai điểm. Nguy hiểm nhất vì augmentation lật ảnh dạy cái sai này hai lần |
+| 2 | Nhầm người | Đặt lại điểm về đúng cơ thể |
+| 3 | Thiếu/thừa người | Gán bổ sung, hoặc xoá skeleton thừa |
+| 4 | Xoá khớp bị che | Gán lại với `v = 1` và đặt chấm ước lượng |
+| 5 | Trượt hẳn | Kéo chấm về đúng khớp |
+| 6 | Lệch nhẹ | Sửa nếu còn thời gian. Ít hại nhất |
+
+Bỏ qua hai mục `Cờ khác gold` và `Gold để v=0` - chúng không trừ điểm, xem mục cuối README.
+
+Chạy lại script sau khi sửa. **Rework không bị trừ điểm** - ghi vào báo cáo: điểm trước,
+sửa gì, điểm sau.
+
+> Điều bất ngờ: lỗi đảo trái/phải không xảy ra ở ảnh khó. Nó xảy ra ở ảnh dễ, rõ ràng,
+> lúc bạn đang làm nhanh. Kiểm cả những ảnh bạn thấy chắc chắn nhất.
+
+---
+
+## Chặng 6 - Colab: fine-tune và đánh giá (3:10-3:50)
+
+1. Nén cả thư mục `Day4-Lab/` (bỏ `gold/` ra - notebook không được dùng gold để train),
+   upload lên Colab hoặc mount Drive. Bật GPU: Runtime -> Change runtime type -> T4.
+2. Mở `notebooks/day4_pose_finetune_yolo26.ipynb`, Run all.
+3. Notebook sẽ: kiểm nhãn -> đo model gốc trên tập test -> fine-tune trên 20 ảnh của bạn
+   -> đo lại -> vẽ kết quả -> so nhãn của bạn với model.
+4. Tải `outputs/eval_model.json` về, commit.
+
+20 ảnh là quá ít để ra một model dùng được. Con số đáng đọc là **chênh lệch** trước/sau,
+và **kiểu sai** bạn nhìn thấy ở phần visualize - không phải giá trị mAP tuyệt đối.
+
+---
+
+## Chặng 7 - Nộp (3:50-4:00)
+
+```bash
+python3 tools/check_pose_labels.py --images dataset/images/train --labels dataset/labels/train
+git add dataset/labels/train annotations reports outputs GUIDELINE_MINI.md
+git commit -m "Day 4: pose annotation + eval"
+```
+
+Đối chiếu [RUBRIC.md](RUBRIC.md) một lượt trước khi push.

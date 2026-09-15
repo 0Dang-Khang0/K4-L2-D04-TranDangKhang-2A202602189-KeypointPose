@@ -1,61 +1,120 @@
-# Ngày 4 — Keypoint & Pose: khối cabin
+# Bài thực hành Ngày 4 - Gán nhãn keypoint & pose
 
-**Thời lượng:** ~60 phút, nằm trong chặng gán nhãn (phút 40-130) của buổi lab 240 phút.
-**Repo đề bài chính:** `Day4-TrackData-Keypoint-Pose` — repo này **không thay thế** nó.
+> Bắt đầu bằng [lab-guide.html](lab-guide.html) nếu bạn mới dùng CVAT. Sau đó làm theo
+> [GUIDE.md](GUIDE.md) để hoàn thành toàn bộ route 240 phút. Hướng dẫn HTML có ảnh CVAT thật,
+> thao tác phóng to/đóng bằng bàn phím, và một bộ luyện cabin tách khỏi dữ liệu model.
 
-Repo đề bài dạy bạn gán 17 điểm COCO trên ảnh thường. Khối cabin hỏi thêm một câu mà bộ ảnh
-đó không hỏi được: **khi khuôn mặt bị privacy mask, bạn xử lý 5 điểm mặt thế nào?**
-
-10 ảnh trong `data/images/` gồm 10 người từ ba bộ dữ liệu công khai — 2 ảnh calibration toàn
-thân và 8 frame trong cabin xe. Bạn gán `person` 17 điểm cho từng ảnh, tự kiểm ba lượt, export
-COCO Keypoints 1.0, rồi chạy validator.
-
-## Luật quan trọng nhất — đọc trước khi đặt chấm đầu tiên
-
-Trên **8 ảnh cabin**, năm điểm `nose` / `left_eye` / `right_eye` / `left_ear` / `right_ear`
-bắt buộc để `Outside` (`v=0`) — **không** đặt chấm vào giữa vùng mask.
-
-Luật này **ngược với luật của repo đề bài** (bị che mà còn trong khung thì `v=1` và vẫn đặt
-chấm). Đây là mâu thuẫn có chủ ý: mask đã xoá bằng chứng, nên không có gì để ước lượng. Hệ quả
-thực tế:
-
-> Nhãn của khối cabin **không bao giờ** được trộn vào tập train của repo đề bài.
-
-Trên **2 ảnh calibration**, làm đúng luật gốc: đủ 17 điểm theo evidence, gồm cả 5 điểm mặt.
-
-Chi tiết đầy đủ: [GUIDE.md](GUIDE.md) mục 0 và 0b.
-
-## Bạn cần nộp gì
-
-Ba file, xem [SUBMISSION.md](SUBMISSION.md):
+Ngày 2 bạn ghi 4 con số cho một người. Ngày 3 bạn thêm một con số nữa (`track_id`).
+Hôm nay bạn ghi **51 con số cho một người** - 17 khớp có tên, mỗi khớp một cặp toạ độ
+và một **cờ visibility**. Cái cờ đó không phải ghi chú cho người đọc sau; nó là một
+phần ba của nhãn, và nó quyết định khớp đó có được tính điểm hay không.
 
 ```text
-COCO_KEYPOINTS_EXPORT.zip     export CVAT, COCO Keypoints 1.0, không sửa tay
-VISIBILITY_REPORT.csv         sinh bởi validator
-POSE_REVIEW.md                bản điền của reports/POSE_REVIEW_TEMPLATE.md
+20 ảnh chưa có nhãn -> CVAT Skeleton (17 điểm) -> export COCO Keypoints 1.0
+   -> tự kiểm 3 lượt + visibility report -> khoá nhãn
+   -> protected release mở -> chấm bằng OKS -> rework
+   -> Colab: fine-tune YOLO26-Pose -> visualize -> đánh giá
 ```
 
-## Bắt đầu
+## Mục tiêu học tập
+
+Sau lab, bạn có thể:
+
+1. Dựng một **skeleton label 17 điểm COCO** trong CVAT và tái sử dụng nó bằng file `.SVG`.
+2. Chọn đúng **v = 0 / 1 / 2** cho từng khớp, và giải thích được vì sao "bị che" khác
+   "ra ngoài khung".
+3. Export đúng **COCO Keypoints 1.0**, và biết đếm 51 (hoặc 56) số để phát hiện export sai.
+4. Đọc **OKS** để tìm lỗi trong nhãn của chính mình, và gọi đúng tên bốn kiểu sai:
+   lệch nhẹ, đảo trái/phải, nhầm người, trượt hẳn.
+5. Dùng **visibility report** để phát hiện bất đồng về *guideline* trước khi đi soi từng pixel.
+6. Fine-tune một model pose trên chính nhãn của mình và giải thích được con số thu được.
+
+## Bài nộp
+
+| Tệp | Nội dung |
+| --- | --- |
+| `dataset/labels/train/*.txt` | nhãn 20 ảnh train, định dạng Ultralytics YOLO Pose (56 số/dòng) |
+| `annotations/coco_keypoints/person_keypoints_default.json` | đúng bản export **COCO Keypoints 1.0** từ CVAT |
+| `annotations/face_hand/` | bộ thứ hai: 21 điểm bàn tay + 5 điểm mặt, cho 5 ảnh (export riêng) |
+| `reports/visibility_report.md`, `outputs/visibility_report.json` | bảng đếm cờ theo từng khớp |
+| `GUIDELINE_MINI.md` | luật của nhóm bạn + ít nhất ba ca mơ hồ đã gặp và cách quyết |
+| `outputs/eval_vs_gold.json` | kết quả chấm với gold (sau khi protected release mở) |
+| `outputs/eval_model.json` | số liệu model trước/sau fine-tune, từ notebook |
+| `reports/REPORT.md` | báo cáo, điền từ `reports/REPORT_TEMPLATE.md` |
+| `reports/review_partner.md` | lỗi tìm được trong bài người khác + reviewer checklist đã điền |
+
+Đọc [GUIDE.md](GUIDE.md) theo thứ tự thao tác và đối chiếu [RUBRIC.md](RUBRIC.md) trước khi nộp.
+
+## Bộ luyện cabin (tùy chọn, không dùng train/test)
+
+`data/images/` có 10 ảnh để luyện ba trạng thái visibility và cách xử lý vùng được che vì riêng tư.
+Nó không phải một phần của `dataset/`: đừng copy ảnh hoặc annotation cabin sang train/test. Đọc
+[DATA_GOVERNANCE.md](DATA_GOVERNANCE.md), chạy `python3 scripts/audit-data-pack.py`, rồi mở
+[lab-guide.html](lab-guide.html) để làm theo ảnh CVAT thật.
+
+## Cấu trúc thư mục
+
+```text
+Day4-Lab/
+  dataset/images/train/   20 ảnh - BÀI CHÍNH, không có nhãn khi pull
+  dataset/images/test/    10 ảnh - có nhãn sẵn, dùng để đánh giá model
+  dataset/labels/train/   nhãn của bạn đặt ở đây (đang trống)
+  dataset/labels/test/    nhãn phát sẵn - KHÔNG sửa, KHÔNG dùng để train
+  gold/                   trống; protected release đặt gold của train ở đây tại mốc 2:30
+  annotations/            bản export gốc từ CVAT (COCO Keypoints + bộ face/hand)
+  tools/                  check / visibility / evaluate / visualize / convert
+  notebooks/              notebook Colab: fine-tune YOLO26-Pose + đánh giá
+  reports/                mẫu báo cáo và reviewer checklist
+  outputs/                kết quả chấm, kết quả model
+  data.yaml               cấu hình dataset cho Ultralytics (kpt_shape [17, 3])
+```
+
+Không đổi tên ảnh, không sửa `dataset/labels/test/`, và không sửa gold sau khi nhận.
+
+## Công cụ
+
+Mọi script trong `tools/` **chỉ dùng thư viện chuẩn của Python** - chạy được ngay,
+không cần cài gì (trừ `visualize_pose.py` cần Pillow). OKS và per-keypoint sigma lấy
+đúng theo định nghĩa của COCO, xem `tools/poselib.py`.
 
 ```bash
-python3 tools/validate-submission.py --export COCO_KEYPOINTS_EXPORT.zip --write-report VISIBILITY_REPORT.csv
+# 1. Sau khi export từ CVAT: COCO Keypoints 1.0 -> nhãn để train
+python3 tools/coco_kp_to_yolo_pose.py \
+    --coco annotations/coco_keypoints/person_keypoints_default.json \
+    --out dataset/labels/train
+
+# 2. Kiểm định dạng - chạy trước khi nộp, không cần gold
+python3 tools/check_pose_labels.py --images dataset/images/train --labels dataset/labels/train
+
+# 3. Lượt hình dáng: bật đường nối lên và nhìn
+python3 tools/visualize_pose.py --images dataset/images/train \
+    --labels dataset/labels/train --out outputs/vis_train
+
+# 4. Deliverable thứ ba: bảng đếm cờ visibility
+python3 tools/visibility_report.py --labels dataset/labels/train \
+    --out outputs/visibility_report.json --markdown reports/visibility_report.md
+
+# 5. Kiểm chéo: so bảng đếm của bạn với của bạn cùng nhóm
+python3 tools/visibility_report.py --labels dataset/labels/train \
+    --compare ../ban_cung_nhom/dataset/labels/train --markdown reports/visibility_compare.md
+
+# 6. Chấm với gold - CHỈ chạy sau khi protected release mở
+python3 tools/evaluate_pose_annotations.py --pred dataset/labels/train \
+    --gold gold/labels/train --images dataset/images/train --out outputs/eval_vs_gold.json
 ```
 
-1. Dựng task CVAT theo [CVAT_SETUP.md](CVAT_SETUP.md).
-2. Gán nhãn theo [GUIDE.md](GUIDE.md), chặng 1 → 6.
-3. Tự kiểm ba lượt **trước khi** mở model diagnostic. Model là công cụ chẩn đoán, không phải đáp án.
-4. Export, chạy validator, điền review, nộp.
+## Một lưu ý về gold - đọc trước khi cãi nhau với điểm số
 
-## Dữ liệu — ràng buộc bắt buộc
+Gold của lab này lấy từ COCO. COCO dùng `v = 0` cho **cả hai** trường hợp: "ra ngoài
+khung" *và* "người gán nhãn quyết định không gán khớp này". Luật của lớp mình chặt hơn:
+khớp bị che mà còn trong khung thì phải là `v = 1` và vẫn đặt chấm.
 
-Pack 10 ảnh này **phi thương mại**, và phải giữ nguyên attribution + ghi chú thay đổi khi chia
-sẻ lại. Nguồn, license và thay đổi của từng ảnh ghi trong
-[data/image-manifest.csv](data/image-manifest.csv) và [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-Đây là người thật đã đồng ý cho dùng dữ liệu — đối xử với ảnh đúng như vậy.
+Hệ quả, và nó là cố ý:
 
-## Chấm điểm
-
-Thang 100 điểm của riêng khối cabin: [RUBRIC.md](RUBRIC.md). Đọc trước khi bắt đầu — cổng qua
-bài và ba cái bẫy mất điểm nặng nhất đều nằm ở đó.
-
-Quy định làm bài và liêm chính học thuật: [RULES.md](RULES.md).
+- Khớp nào gold để `v = 0` thì **bị loại khỏi phép tính OKS** - bạn không được và cũng
+  không mất điểm ở khớp đó. Cứ theo luật của lớp, gắn `v = 1` và đặt chấm.
+- Nên `%v = 1` trong visibility report của bạn sẽ **cao hơn của gold**. Đó không phải lỗi
+  của bạn. Đó đúng là thứ slide 47 nói: hai bảng đếm lệch nhau = hai guideline khác nhau,
+  không phải hai bức ảnh khác nhau.
+- `tools/check_pose_labels.py` chạy trên chính gold cũng in ra cảnh báo vì lý do này.
+  Lớp sẽ dùng nó làm ví dụ.

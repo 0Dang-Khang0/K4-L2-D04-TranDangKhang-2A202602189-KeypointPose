@@ -1,27 +1,19 @@
-# Third-party notices and sources
+# Third-party notices
 
-## Bộ 10 ảnh trong `data/images/`
+## Cabin practice pack
 
-- **HSRD-100: 100 High-Quality 3D Human Scans Dataset**, Digital Reality Lab, pinned revision `fe753f2eb34ec0194511eecebbcbffa2fddb67e1`, licensed CC BY 4.0: <https://huggingface.co/datasets/digitalrealitylab/HSRD-100>. Changes: selected two consented scan previews, cropped one front view/person, stripped metadata and re-encoded JPEG.
-- **Driver Risk Behavior Dataset for Embedded Vision Applications**, Juan Manuel Calvo Duque, version 1, DOI `10.17632/562zj8n7xf.1`, licensed CC BY 4.0: <https://data.mendeley.com/datasets/562zj8n7xf/1>. Changes: selected five frames from five recording groups, cropped to driver ROI, applied opaque face masks, stripped metadata and re-encoded JPEG.
-- **RGB and Depth videos directory**, Leandro L. Di Stasi et al., version 1, DOI `10.25452/figshare.plus.22277668.v1`, licensed CC BY-NC 4.0: <https://plus.figshare.com/articles/dataset/RGB_and_Depth_videos_directory/22277668>. Changes: selected three frames from three participant videos, preserved the publisher's face mask, applied documented sensor stressors, stripped metadata and re-encoded JPEG.
+- **HSRD-100: 100 High-Quality 3D Human Scans Dataset**, Digital Reality Lab, revision `fe753f2eb34ec0194511eecebbcbffa2fddb67e1`, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): <https://huggingface.co/datasets/digitalrealitylab/HSRD-100>. Two consented scan previews were selected, cropped, metadata-stripped and re-encoded.
+- **Driver Risk Behavior Dataset for Embedded Vision Applications**, Juan Manuel Calvo Duque, version 1, DOI `10.17632/562zj8n7xf.1`, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): <https://data.mendeley.com/datasets/562zj8n7xf/1>. Five frames were cropped to the driver ROI, every visible face was covered with an opaque mask, and metadata was stripped.
+- **RGB and Depth videos directory**, Leandro L. Di Stasi et al., version 1, DOI `10.25452/figshare.plus.22277668.v1`, [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): <https://plus.figshare.com/articles/dataset/RGB_and_Depth_videos_directory/22277668>. Three frames preserve the published face mask, receive documented sensor stressors and have metadata stripped.
 
-**Bộ ảnh gộp lại là phi thương mại** — ràng buộc CC BY-NC 4.0 là ràng buộc nghiêm nhất trong ba
-nguồn nên nó áp cho cả pack. Attribution, link license và ghi chú thay đổi phải đi kèm mọi bản
-sao. Không ngụ ý tác giả nguồn bảo trợ cho bài học này.
+The combined cabin practice pack is classroom/noncommercial only. Attribution, license links and change notices must travel with any copy. No endorsement by source authors is implied.
 
-Pack này được phân phối công khai kèm repo, theo đúng điều khoản redistribute của cả ba license
-nguồn. Ảnh là người thật đã đồng ý cho sử dụng dữ liệu, 8 ảnh có mask che mặt; xem ràng buộc sử
-dụng ở [RULES.md](RULES.md). Nếu bạn là người trong ảnh hoặc là tác giả nguồn và muốn gỡ một ảnh
-khỏi pack, liên hệ người phụ trách lớp — ảnh sẽ được gỡ khỏi bản phát hành mà không cần tranh
-luận về license.
+Exact source members, timestamps, integrity values, transforms and output SHA-256 hashes are in `data/source-selection.json` and `data/image-manifest.csv`.
 
-Nguồn, license và thay đổi của từng ảnh: [`data/image-manifest.csv`](data/image-manifest.csv).
+## Technical references
 
-## Công cụ và tham chiếu kỹ thuật
+- CVAT skeleton workflow: <https://github.com/cvat-ai/cvat> and <https://docs.cvat.ai/docs/manual/advanced/skeletons/>.
+- COCO person keypoint topology: <https://cocodataset.org/#keypoints-2020>.
+- Ultralytics is installed only when the Colab notebook runs. No model weights are redistributed; review <https://www.ultralytics.com/license> for its terms.
 
-- CVAT skeleton SVG / COCO Keypoints workflow: dự án Apache-2.0 tại <https://github.com/cvat-ai/cvat> và <https://docs.cvat.ai/docs/manual/advanced/skeletons/>.
-- Tên và topology 17 điểm COCO: <https://cocodataset.org/#keypoints-2020>.
-- Diagnostic tuỳ chọn: `ultralytics` và checkpoint pose tải lúc chạy; xem điều khoản AGPL-3.0/Enterprise tại <https://www.ultralytics.com/license>. Không redistribute weight.
-
-Tài liệu này ghi attribution và ranh giới kỹ thuật; không phải tư vấn pháp lý.
+This notice records attribution and engineering boundaries; it is not legal advice.

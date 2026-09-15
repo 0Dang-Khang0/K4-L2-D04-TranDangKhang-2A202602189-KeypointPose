@@ -1,4 +1,4 @@
-"""Standard-library validation helpers for the Day 4 COCO-17 pose pilot."""
+"""Standard-library validation helpers for the Day 4 COCO-17 cabin practice pack."""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ COCO_SKELETON = (
     (2, 4), (3, 5), (4, 6), (5, 7),
 )
 
-PILOT_IMAGE_NAMES = (
+CABIN_IMAGE_NAMES = (
     "d04-01-calibration-full-coco17-frontal.jpg",
     "d04-02-calibration-raised-arm-coco17.jpg",
     "d04-03-cabin-real-vehicle-baseline.jpg",
@@ -74,7 +74,7 @@ MAX_TOTAL_SIZE = 100 * 1024 * 1024
 
 
 class ValidationError(ValueError):
-    """Raised when an artifact violates the pilot contract."""
+    """Raised when an artifact violates the cabin-practice contract."""
 
 
 def sha256_file(path: Path | str) -> str:
@@ -169,7 +169,7 @@ def _normalized_skeleton(value: object) -> set[tuple[int, int]]:
 
 def audit_coco_keypoints_archive(
     archive_path: Path | str,
-    expected_image_names: tuple[str, ...] | list[str] = PILOT_IMAGE_NAMES,
+    expected_image_names: tuple[str, ...] | list[str] = CABIN_IMAGE_NAMES,
 ) -> dict[str, object]:
     """Audit structural COCO-17 invariants without claiming semantic correctness."""
 
@@ -192,7 +192,7 @@ def audit_coco_keypoints_archive(
     if not isinstance(images, list) or not isinstance(annotations, list) or not isinstance(categories, list):
         raise ValidationError("COCO cần arrays images, annotations và categories")
     if len(categories) != 1 or not isinstance(categories[0], dict):
-        raise ValidationError("COCO pilot cần đúng một category person")
+        raise ValidationError("COCO cabin practice cần đúng một category person")
 
     category = categories[0]
     if category.get("name") != "person":
@@ -290,7 +290,7 @@ def audit_coco_keypoints_archive(
 
     wrong_counts = [image_id for image_id, count in annotations_per_image.items() if count != 1]
     if wrong_counts:
-        raise ValidationError("Pilot cần đúng một person annotation trên mỗi image")
+        raise ValidationError("Cabin practice cần đúng một person annotation trên mỗi image")
 
     rows = []
     for index, (name, counts) in enumerate(zip(KEYPOINT_NAMES, visibility_counts)):
@@ -345,7 +345,7 @@ def validate_visibility_report(path: Path | str, expected_rows: list[dict[str, o
         raise ValidationError("VISIBILITY_REPORT.csv không khớp COCO export hiện tại")
 
 
-def validate_pose_review(path: Path | str, expected_image_names: tuple[str, ...] = PILOT_IMAGE_NAMES) -> None:
+def validate_pose_review(path: Path | str, expected_image_names: tuple[str, ...] = CABIN_IMAGE_NAMES) -> None:
     path = Path(path)
     if not path.is_file():
         raise ValidationError(f"Không tìm thấy {path.name}")

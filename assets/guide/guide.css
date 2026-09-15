@@ -434,8 +434,8 @@ summary:focus-visible {
 .lightbox-stage { display: grid; place-items: center; padding: var(--space-4); overflow: auto; background: var(--panel-strong); }
 /* chiều ngang do JS đặt để chữ trong giao diện CVAT còn đọc được; màn hẹp thì kéo ngang xem tiếp */
 .lightbox-stage img { max-width: none; max-height: 70vh; height: auto; object-fit: contain; }
-.lightbox-panel figcaption { padding: var(--space-4); border-top: 1px solid var(--line-strong); color: var(--ink); }
-.lightbox-hint { margin: 0; padding: 0 var(--space-4) var(--space-4); color: var(--muted); font-size: var(--text-sm); }
+.lightbox-panel figcaption { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line-strong); background: var(--warning-soft); color: var(--ink); font-weight: 700; }
+.lightbox-hint { margin: 0; padding: var(--space-2) var(--space-4) var(--space-3); border-bottom: 1px solid var(--line-strong); background: var(--warning-soft); color: var(--muted); font-size: var(--text-sm); }
 body.lightbox-open { overflow: hidden; }
 
 /* ---- six-stage overview ---- */
@@ -456,7 +456,7 @@ body.lightbox-open { overflow: hidden; }
 .timeline-section { border-top: 1px solid var(--line-strong); }
 .timeline-heading { display: flex; justify-content: space-between; gap: var(--space-12); align-items: end; }
 .timeline-heading > p { max-width: 28rem; margin: 0; color: var(--muted); }
-.timeline { display: grid; grid-template-columns: repeat(6, minmax(10rem, 1fr)); margin: var(--space-12) 0 0; padding: 0; overflow-x: auto; border-left: 1px solid var(--line-strong); list-style: none; }
+.timeline { display: grid; grid-template-columns: repeat(7, minmax(10rem, 1fr)); margin: var(--space-12) 0 0; padding: 0; overflow-x: auto; border-left: 1px solid var(--line-strong); list-style: none; }
 .timeline li { min-height: 15rem; padding: var(--space-4); border-block: 1px solid var(--line-strong); border-right: 1px solid var(--line-strong); }
 .timeline time { color: var(--accent-dark); font-weight: 800; font-variant-numeric: tabular-nums; }
 .timeline strong { display: block; margin-top: var(--space-12); font: 800 var(--text-lg)/1 var(--display); text-transform: uppercase; }
