@@ -48,8 +48,8 @@ python3 tools/validate-submission.py --export COCO_KEYPOINTS_EXPORT.zip --write-
 
 ## Dữ liệu — ràng buộc bắt buộc
 
-Pack 10 ảnh này dùng cho **lớp học/phi thương mại**, không dùng cho mục đích thương mại, và
-phải giữ nguyên attribution khi chia sẻ lại. Nguồn, license và thay đổi của từng ảnh ghi trong
+Pack 10 ảnh này **phi thương mại**, và phải giữ nguyên attribution + ghi chú thay đổi khi chia
+sẻ lại. Nguồn, license và thay đổi của từng ảnh ghi trong
 [data/image-manifest.csv](data/image-manifest.csv) và [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 Đây là người thật đã đồng ý cho dùng dữ liệu — đối xử với ảnh đúng như vậy.
 

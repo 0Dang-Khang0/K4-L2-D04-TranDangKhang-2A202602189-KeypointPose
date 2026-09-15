@@ -26,13 +26,19 @@ cổ chân. Bất đồng giữa bạn và model chỉ tạo **câu hỏi**, kh�
 ## Dữ liệu
 
 10 ảnh trong `data/images/` là người thật đã đồng ý cho sử dụng dữ liệu, trong đó 8 ảnh đã được
-che mặt để giảm nhận dạng. Ràng buộc:
+che mặt để giảm nhận dạng. Repo này công khai, nên ràng buộc dưới đây đi theo ảnh tới bất kỳ ai
+clone hoặc fork nó:
 
-- **Chỉ dùng cho lớp học, phi thương mại.**
-- Không đăng lại ảnh ra ngoài phạm vi lớp.
-- Không cố khôi phục khuôn mặt bị mask, không cố định danh người trong ảnh.
-- Chia sẻ lại trong phạm vi cho phép thì phải giữ nguyên attribution và ghi chú thay đổi
-  ([THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)).
+- **Phi thương mại.** Ràng buộc nghiêm nhất trong ba nguồn là CC BY-NC 4.0, và nó áp cho cả pack.
+- **Không cố khôi phục khuôn mặt bị mask, không cố định danh người trong ảnh.** Đây là ràng buộc
+  tuyệt đối, không có ngoại lệ cho mục đích học tập.
+- Chia sẻ lại thì phải giữ nguyên attribution, link license và ghi chú thay đổi
+  ([THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)) — bỏ chúng đi là vi phạm license, không phải
+  lỗi trình bày.
+- Không nhập pack này vào dataset khác, không đăng lên nền tảng chia sẻ dataset, nếu không mang
+  theo đủ ba thứ trên.
+- Không dùng ảnh để suy luận hay dán nhãn trạng thái, hành vi, sự chú ý của người trong ảnh. Việc
+  của bài là chất lượng nhãn pose.
 
 Vi phạm phần dữ liệu nặng hơn vi phạm phần kỹ thuật — nó ảnh hưởng tới người thật, không chỉ
 tới điểm số.
