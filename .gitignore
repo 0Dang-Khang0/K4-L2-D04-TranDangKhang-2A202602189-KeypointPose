@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Bài làm của bạn — không commit vào repo đề bài
+submission/*
+!submission/.gitkeep
+outputs/*
+!outputs/.gitkeep
+*.zip
+VISIBILITY_REPORT.csv
+POSE_REVIEW.md
