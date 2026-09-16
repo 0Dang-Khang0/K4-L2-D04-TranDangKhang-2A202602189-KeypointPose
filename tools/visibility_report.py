@@ -103,8 +103,8 @@ def render_markdown(report: dict, comparison: dict | None) -> str:
         "",
         "## Đọc bảng này thế nào",
         "",
-        "1. Khớp nào có **%v=1 cao**: khớp hay bị che. Trong ảnh có phương tiện, cổ tay và hông"
-        " gần như luôn dẫn đầu - đúng như slide 13 nói về cabin.",
+        "1. Khớp nào có **%v=1 cao**: khớp hay bị che. Cổ tay và hông thường là hai vị trí"
+        " cần xem lại guideline trước khi kết luận.",
         "2. Khớp nào có **v=0 cao bất thường**: mọi người đang dùng Outside ở chỗ đáng lẽ là Occluded."
         " Đó là lỗi số 3 của slide 46, và nó xoá thẳng khớp đó khỏi bảng điểm OKS.",
         "3. Khi so hai người: **lệch lớn = bất đồng về guideline**, không phải về bức ảnh."

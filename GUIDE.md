@@ -25,7 +25,7 @@ trong `left_wrist` thì `coco_kp_to_yolo_pose.py` báo lỗi, bạn phải expor
 Repo đã có hai asset đúng contract; chọn một trong hai cách sau:
 
 **Cách A — upload SVG (nhanh nhất).** Dùng file
-`data/schema/coco17-cvat-skeleton.svg`.
+`assets/schema/coco17-cvat-skeleton.svg`.
 
 1. Tạo **Project** mới → ở khung Labels, bấm **Setup skeleton**.
 2. Bấm **Upload a skeleton from SVG** và chọn file `.svg` trên.
@@ -33,7 +33,7 @@ Repo đã có hai asset đúng contract; chọn một trong hai cách sau:
 4. Tạo **một Task** trong project đó và upload 20 ảnh `dataset/images/train/`.
 
 **Cách B — dựng từ JSON đã phát hành.** Nếu CVAT không nhận SVG, mở
-`data/schema/coco17-keypoints.json` để đọc đúng 17 tên và 19 cạnh, rồi dựng trong
+`assets/schema/coco17-keypoints.json` để đọc đúng 17 tên và 19 cạnh, rồi dựng trong
 Skeleton Configurator.
 
 Dù đi đường nào, sau khi xong hãy vào **Setup skeleton → Download skeleton as SVG**

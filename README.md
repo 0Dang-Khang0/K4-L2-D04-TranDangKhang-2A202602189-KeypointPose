@@ -2,7 +2,7 @@
 
 > Bắt đầu bằng [lab-guide.html](lab-guide.html) nếu bạn mới dùng CVAT. Sau đó làm theo
 > [GUIDE.md](GUIDE.md) để hoàn thành toàn bộ route 240 phút. Hướng dẫn HTML có ảnh CVAT thật,
-> thao tác phóng to/đóng bằng bàn phím, và một bộ luyện cabin tách khỏi dữ liệu model.
+> thao tác phóng to/đóng bằng bàn phím, và không yêu cầu kinh nghiệm lập trình.
 
 Ngày 2 bạn ghi 4 con số cho một người. Ngày 3 bạn thêm một con số nữa (`track_id`).
 Hôm nay bạn ghi **51 con số cho một người** - 17 khớp có tên, mỗi khớp một cặp toạ độ
@@ -25,7 +25,6 @@ không đổi chỗ cho nhau.
 | --- | --- | --- | --- |
 | **Core: 20 ảnh chưa nhãn** | `dataset/images/train/` | Tạo một task CVAT `person` 17 điểm, gán tất cả người trong ảnh, export và chuyển thành nhãn YOLO Pose | **Có** |
 | **Test: 10 ảnh đã có nhãn** | `dataset/images/test/`, `dataset/labels/test/` | Chỉ dùng để đánh giá model trong notebook | **Không sửa, không train** |
-| **Luyện cabin: 10 ảnh** | `data/images/` | Luyện visibility/privacy theo hướng dẫn HTML nếu còn thời gian | **Không train, không test, không nộp** |
 
 Không có bài hand/face trong bản phát hành này. Đừng tự tạo skeleton thứ hai hoặc thêm thư mục
 export thứ hai: repo chưa phát hành input và schema có thể kiểm chứng cho phần đó.
@@ -57,13 +56,6 @@ Sau lab, bạn có thể:
 | `reports/review_partner.md` | lỗi tìm được trong bài người khác + reviewer checklist đã điền |
 
 Đọc [GUIDE.md](GUIDE.md) theo thứ tự thao tác và đối chiếu [RUBRIC.md](RUBRIC.md) trước khi nộp.
-
-## Bộ luyện cabin (tùy chọn, không dùng train/test)
-
-`data/images/` có 10 ảnh để luyện ba trạng thái visibility và cách xử lý vùng được che vì riêng tư.
-Nó không phải một phần của `dataset/`: đừng copy ảnh hoặc annotation cabin sang train/test. Đọc
-[DATA_GOVERNANCE.md](DATA_GOVERNANCE.md), chạy `python3 scripts/audit-data-pack.py`, rồi mở
-[lab-guide.html](lab-guide.html) để làm theo ảnh CVAT thật.
 
 ## Cấu trúc thư mục
 

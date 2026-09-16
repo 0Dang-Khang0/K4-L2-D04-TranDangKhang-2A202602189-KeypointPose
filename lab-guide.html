@@ -43,7 +43,6 @@
           <div><dt>Thời lượng</dt><dd>240 phút</dd></div>
           <div><dt>Core task</dt><dd>20 ảnh · person</dd></div>
           <div><dt>Test set</dt><dd>10 ảnh · chỉ đánh giá</dd></div>
-          <div><dt>Cabin practice</dt><dd>10 ảnh · tùy chọn</dd></div>
           <div><dt>Điểm mỗi người</dt><dd>17</dd></div>
           <div><dt>Định dạng nộp</dt><dd>Keypoints 1.0</dd></div>
         </dl>
@@ -66,10 +65,10 @@
           <a href="#submit">Xem bằng chứng phải nộp</a>
         </article>
         <article class="scope-card">
-          <span>LUYỆN THÊM</span>
-          <h2>10 ảnh cabin</h2>
-          <p><code>data/images/</code> chỉ luyện privacy và visibility. Không trộn ảnh hoặc nhãn cabin vào train/test hay bài nộp.</p>
-          <a href="#cabin-rule">Xem luật privacy</a>
+          <span>BẰNG CHỨNG NỘP</span>
+          <h2>8 artifact</h2>
+          <p>Export COCO, nhãn train, visibility report, kết quả gold, Colab và peer review đều xuất phát từ task core.</p>
+          <a href="#submit">Xem danh sách nộp</a>
         </article>
       </div>
     </section>
@@ -78,7 +77,7 @@
       <div class="section-heading wide-heading">
         <p class="section-code">BƯỚC 0</p>
         <h2 id="start-title">Bạn đang ở đâu, và bắt đầu từ đâu.</h2>
-        <p>Bạn chỉ cần đi theo đúng thứ tự bên dưới. Phần được chấm là <strong>một task core 20 ảnh</strong> theo pose COCO-17. Bộ ảnh cabin trong trang này là bài luyện privacy/visibility tùy chọn: không trộn vào train, test hay bài nộp của task core.</p>
+        <p>Bạn chỉ cần đi theo đúng thứ tự bên dưới. Phần được chấm là <strong>một task core 20 ảnh</strong> theo pose COCO-17. Không có bộ ảnh hay task phụ nào cần làm thêm.</p>
       </div>
 
       <ol class="route-band" aria-label="Lộ trình Lab 4">
@@ -103,7 +102,7 @@
         <article>
           <span>ĐÃ BIẾT POSE</span>
           <h3>Từng làm keypoint COCO</h3>
-          <p>Xác nhận schema <code>person</code> 17 điểm, đọc <a href="#cabin-rule">quy tắc privacy của bộ cabin</a> nếu làm phần luyện thêm, rồi dùng <a href="#quality">ba lượt tự kiểm</a>.</p>
+          <p>Xác nhận schema <code>person</code> 17 điểm, rồi dùng <a href="#quality">ba lượt tự kiểm</a>.</p>
           <b>Không xem tham chiếu trước self-QC</b>
         </article>
       </div>
@@ -149,8 +148,8 @@
           <label><input type="checkbox" data-progress> Task core chứa đúng 20 ảnh train</label>
           <label><input type="checkbox" data-progress> Label cha là <code>person</code></label>
           <label><input type="checkbox" data-progress> Có đúng 17 sublabel theo thứ tự COCO</label>
-          <label><input type="checkbox" data-progress> Task A dùng skeleton <code>person</code> 17 điểm COCO theo đúng thứ tự</label>
-          <label><input type="checkbox" data-progress> Đã đọc luật che mặt của bộ luyện cabin ở mục dữ liệu</label>
+          <label><input type="checkbox" data-progress> Task core dùng skeleton <code>person</code> 17 điểm COCO theo đúng thứ tự</label>
+          <label><input type="checkbox" data-progress> Biết test set chỉ để đánh giá, không được dùng train</label>
           <div class="progress-meter" aria-live="polite">
             <span>Tiến độ preflight</span><strong data-progress-label>0/6</strong>
             <i><b data-progress-bar></b></i>
@@ -168,41 +167,10 @@
     <section class="data-section section-pad" id="data-pack" aria-labelledby="data-title">
       <div class="section-heading wide-heading">
         <p class="section-code">GÓI DỮ LIỆU</p>
-        <h2 id="data-title">Học đủ 17 điểm, rồi xử lý ảnh khó.</h2>
-        <p>Task core dùng 20 ảnh nhiều người để tạo nhãn train. Bên dưới là bộ luyện cabin 10 ảnh độc lập: hai ảnh tập đủ COCO-17, sau đó tám ca có bằng chứng bị giới hạn để luyện quyết định visibility.</p>
+        <h2 id="data-title">Một bộ train, một bộ test.</h2>
+        <p>Bạn gán nhãn đúng 20 ảnh trong <code>dataset/images/train/</code>. Mười ảnh trong <code>dataset/images/test/</code> đã có nhãn sẵn; giữ nguyên chúng để notebook đo model trước và sau fine-tune.</p>
       </div>
-
-      <div class="calibration-grid">
-        <figure class="data-shot calibration-main">
-          <img src="data/images/d04-01-calibration-full-coco17-frontal.jpg" width="1120" height="2060" alt="Ảnh tập tay toàn thân nhìn thẳng, đủ bằng chứng cho 17 keypoint COCO">
-          <figcaption><span>TẬP TAY 01</span><strong>Đủ mặt, tay, hông, gối và cổ chân</strong></figcaption>
-        </figure>
-        <figure class="data-shot">
-          <img src="data/images/d04-02-calibration-raised-arm-coco17.jpg" width="1000" height="2100" alt="Ảnh tập tay toàn thân với một tay giơ cao để luyện topology và trái phải" loading="lazy">
-          <figcaption><span>TẬP TAY 02</span><strong>Tay giơ cao, tự che khuất và trái/phải</strong></figcaption>
-        </figure>
-        <aside class="calibration-rule">
-          <strong>Quy tắc hai ảnh đầu</strong>
-          <p>Đặt đủ 17 điểm theo những gì nhìn thấy. Trái và phải tính theo cơ thể người trong ảnh, không theo phía màn hình của bạn.</p>
-          <code>nose → eyes → ears → shoulders → ankles</code>
-        </aside>
-      </div>
-
-      <div class="cabin-intro" id="cabin-rule">
-        <div><span>BÀI LUYỆN PRIVACY</span><h3>Tám tình huống cabin</h3></div>
-        <p>Năm điểm trên mặt — <code>nose</code>, hai mắt, hai tai — luôn để <strong>Outside</strong> vì lớp che riêng tư đã xoá hết bằng chứng. Các điểm còn lại vẫn phải xét riêng từng ảnh. Bộ này không dùng để train hoặc test model.</p>
-      </div>
-      <div class="cabin-gallery">
-        <figure class="data-shot"><img src="data/images/d04-03-cabin-real-vehicle-baseline.jpg" width="1200" height="1000" alt="Ảnh cabin xe thật ở điều kiện cơ sở với khuôn mặt đã che" loading="lazy"><figcaption><span>03</span><strong>Cơ sở</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-04-cabin-real-vehicle-object-interaction.jpg" width="1100" height="1000" alt="Ảnh cabin xe thật có tương tác với vật thể và khuôn mặt đã che" loading="lazy"><figcaption><span>04</span><strong>Chạm vật thể</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-05-cabin-real-vehicle-cool-cast.jpg" width="1300" height="1000" alt="Ảnh cabin xe thật có ám màu lạnh và góc cơ thể xiên" loading="lazy"><figcaption><span>05</span><strong>Ám màu lạnh</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-06-cabin-real-vehicle-forward-lean.jpg" width="1300" height="1000" alt="Ảnh cabin xe thật với tư thế nghiêng người về trước" loading="lazy"><figcaption><span>06</span><strong>Nghiêng trước</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-07-cabin-real-vehicle-handheld-object.jpg" width="1150" height="1000" alt="Ảnh cabin xe thật có vật cầm tay và cổ tay chồng lấp" loading="lazy"><figcaption><span>07</span><strong>Vật cầm tay</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-08-cabin-simulator-low-light.jpg" width="640" height="480" alt="Ảnh cabin mô phỏng trong điều kiện ánh sáng yếu" loading="lazy"><figcaption><span>08</span><strong>Thiếu sáng</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-09-cabin-simulator-glare.jpg" width="640" height="480" alt="Ảnh cabin mô phỏng có ánh sáng chói bên hông" loading="lazy"><figcaption><span>09</span><strong>Chói sáng</strong></figcaption></figure>
-        <figure class="data-shot"><img src="data/images/d04-10-cabin-simulator-obstruction.jpg" width="640" height="480" alt="Ảnh cabin mô phỏng có vật cản ống kính" loading="lazy"><figcaption><span>10</span><strong>Vật cản</strong></figcaption></figure>
-      </div>
-      <p class="source-note">Nguồn, giấy phép, xử lý riêng tư và mã SHA-256 của từng ảnh nằm trong <a href="data/image-manifest.csv">image manifest</a> và <a href="DATA_GOVERNANCE.md">data governance</a>.</p>
+      <div class="boundary-note"><strong>Không trộn dữ liệu</strong><p>Không chép nhãn test sang train, không sửa <code>dataset/labels/test/</code>, và không đổi tên ảnh. Một model chỉ đáng tin khi train và test là hai bộ tách biệt.</p></div>
     </section>
 
     <section class="schema-section section-pad" id="visibility" aria-labelledby="schema-title">
@@ -253,8 +221,7 @@
       <div class="visibility-board">
         <article><b>v=2</b><h3>Visible</h3><p>Nhìn thấy khớp đủ rõ để đặt điểm ngay tại tâm khớp.</p><code>đặt vào tâm khớp</code></article>
         <article><b>v=1</b><h3>Occluded</h3><p>Khớp bị che, nhưng vẫn suy ra được vị trí hợp lý từ phần cơ thể xung quanh.</p><code>đặt điểm + bật Occluded</code></article>
-        <article><b>v=0</b><h3>Outside</h3><p>Khớp nằm ngoài khung ảnh, hoặc không còn bằng chứng nào để suy ra vị trí.</p><code>bật Outside, không đoán bừa</code></article>
-        <aside><strong>Luật riêng của ảnh cabin</strong><p><code>nose</code>, hai mắt và hai tai luôn là <code>v=0</code>. Không đặt điểm vào giữa vùng che. Quy tắc này chỉ áp dụng cho bộ luyện cabin, không áp lên task core.</p></aside>
+        <article><b>v=0</b><h3>Outside</h3><p>Khớp nằm ngoài khung ảnh. Không đặt toạ độ cho điểm này.</p><code>bật Outside, không đoán bừa</code></article>
       </div>
     </section>
 
@@ -383,7 +350,7 @@
           <div class="step-copy">
             <p class="step-index">Bước 1</p>
             <h3>Mở job và kiểm thanh trên</h3>
-            <p>Thanh trên cùng cho biết bạn đang ở ảnh nào. Bên trái là <strong>Menu</strong> và <strong>Save</strong>; ở giữa là các nút chuyển frame; bên phải là tên file và ô số frame. Ảnh dưới là task luyện cabin, nên số frame chỉ là ví dụ — task core của bạn có 20 ảnh.</p>
+            <p>Thanh trên cùng cho biết bạn đang ở ảnh nào. Bên trái là <strong>Menu</strong> và <strong>Save</strong>; ở giữa là các nút chuyển frame; bên phải là tên file và ô số frame. Ảnh dưới chỉ minh hoạ giao diện — task core của bạn có 20 ảnh.</p>
             <ul class="step-check">
               <li>Task core có 20 ảnh. Số frame có thể bắt đầu khác tùy job được giao.</li>
               <li>Tên file trên thanh trên trùng với ảnh bạn đang gán</li>
@@ -392,8 +359,8 @@
             <p class="step-note">Mẹo: bấm thẳng biểu tượng <strong>Save</strong>. Phím tắt <kbd>Ctrl</kbd>+<kbd>S</kbd> chỉ ăn khi con trỏ đang ở vùng ảnh.</p>
           </div>
           <figure class="shot">
-            <button class="shot-zoom" type="button" data-zoom data-zoom-note="Bước 1 — thanh trên: Menu và Save ở trái, nút chuyển frame ở giữa, tên file và số frame ở phải. Dùng tên file để biết đang ở ảnh nào trong 10 ảnh.">
-              <img src="assets/guide/cvat/04-toolbar-top.jpg" width="1120" height="64" alt="Cận cảnh thanh công cụ trên của CVAT: Menu, Save, Undo, Redo, nút chuyển frame, tên file d04-03 và ô số frame 2">
+            <button class="shot-zoom" type="button" data-zoom data-zoom-note="Bước 1 — thanh trên: Menu và Save ở trái, nút chuyển frame ở giữa, tên file và số frame ở phải. Dùng tên file để biết đang ở ảnh nào trong task core 20 ảnh.">
+              <img src="assets/guide/cvat/04-toolbar-top.jpg" width="1120" height="64" alt="Cận cảnh thanh công cụ trên của CVAT: Menu, Save, Undo, Redo, nút chuyển frame, tên file và ô số frame">
               <span class="shot-zoom-hint" aria-hidden="true">Phóng to</span>
             </button>
             <figcaption><span>ẢNH THẬT · CẬN CẢNH</span><strong>Thanh trên của màn hình gán nhãn</strong></figcaption>
@@ -430,7 +397,7 @@
               <li>Một cú bấm lên ảnh sẽ tạo cả cụm 17 điểm cùng lúc</li>
               <li>Sau đó bạn kéo từng điểm về đúng vị trí</li>
             </ul>
-            <p class="step-note">Task core: đặt một người một skeleton và gán <strong>tất cả người nhìn thấy</strong>. Bộ luyện cabin bên dưới chỉ gán người lái; người lọt vào rìa ảnh không thuộc phần luyện đó.</p>
+            <p class="step-note">Đặt một người một skeleton và gán <strong>tất cả người nhìn thấy</strong>. Hoàn tất một người rồi mới chuyển sang người kế tiếp để tránh nhầm người.</p>
           </div>
           <figure class="shot">
             <button class="shot-zoom" type="button" data-zoom data-zoom-note="Bước 3 — bảng Draw new skeleton. Label giữ person, bấm Shape. Nút Track ngay bên cạnh dành cho video và sẽ tạo sai loại đối tượng.">
@@ -454,7 +421,7 @@
           </div>
           <figure class="shot">
             <button class="shot-zoom" type="button" data-zoom data-zoom-note="Bước 4 — toàn màn hình gán nhãn: vùng ảnh ở giữa, thanh công cụ dọc bên trái, panel đối tượng bên phải. Đây là bố cục bạn sẽ làm việc trong suốt buổi.">
-              <img src="assets/guide/cvat/01-job-overview.jpg" width="1440" height="900" alt="Toàn màn hình gán nhãn của CVAT: ảnh cabin đã che mặt ở giữa, thanh công cụ bên trái, panel Labels bên phải" loading="lazy">
+              <img src="assets/guide/cvat/01-job-overview.jpg" width="1440" height="900" alt="Toàn màn hình gán nhãn của CVAT: vùng ảnh ở giữa, thanh công cụ bên trái, panel Labels bên phải" loading="lazy">
               <span class="shot-zoom-hint" aria-hidden="true">Phóng to</span>
             </button>
             <figcaption><span>ẢNH THẬT · TOÀN MÀN HÌNH</span><strong>Bố cục màn hình gán nhãn</strong></figcaption>
@@ -467,9 +434,8 @@
             <h3>Gán trạng thái cho từng điểm</h3>
             <p>Chọn một điểm rồi đặt trạng thái: <strong>Visible</strong> khi nhìn thấy khớp, <strong>Occluded</strong> (phím <kbd>q</kbd>) khi bị che nhưng vẫn suy ra được, <strong>Outside</strong> (phím <kbd>o</kbd>) khi ra ngoài khung hoặc mất sạch bằng chứng.</p>
             <ul class="step-check">
-              <li>Chỉ ở bộ luyện cabin: năm điểm trên mặt luôn <strong>Outside</strong></li>
               <li>Không dùng <strong>Hidden</strong> (<kbd>h</kbd>) — trạng thái này không được lưu vào export</li>
-              <li>Nếu cả Task A không có điểm nào <code>v=1</code>, xem lại vì có thể bạn đang né điểm khó</li>
+              <li>Nếu cả task core không có điểm nào <code>v=1</code>, xem lại vì có thể bạn đang né điểm khó</li>
             </ul>
           </div>
           <figure class="shot shot-diagram shot-diagram-wide">
@@ -510,7 +476,7 @@
     <section class="timeline-section section-pad" aria-labelledby="timeline-title">
       <div class="timeline-heading">
         <div class="section-heading"><h2 id="timeline-title">Bảy chặng, 240 phút.</h2></div>
-        <p>Đi hết các chặng theo thứ tự. Bạn chỉ chuyển sang đánh giá sau khi đã khóa nhãn; bộ cabin là bài luyện thêm trong chặng gán nhãn, không làm thay task core.</p>
+        <p>Đi hết các chặng theo thứ tự. Bạn chỉ chuyển sang đánh giá sau khi đã khóa nhãn; mọi artifact của buổi học đều xuất phát từ task core.</p>
       </div>
       <ol class="timeline">
         <li><time>00–20</time><strong>Dựng schema</strong><span>Kiểm skeleton, label và luật visibility</span></li>
@@ -546,7 +512,7 @@
       </div>
       <div class="finding-formula" aria-label="Cấu trúc một finding"><b>ẢNH</b><i>+</i><b>ĐIỂM</b><i>+</i><b>LUẬT</b><i>+</i><b>CÁCH SỬA</b></div>
       <div class="finding-example">
-        <div><span>Ảnh</span><strong>d04-07</strong></div>
+        <div><span>Ảnh</span><strong>train_07</strong></div>
         <div><span>Điểm</span><strong>right_wrist</strong></div>
         <div><span>Bằng chứng</span><strong>Vật cầm tay che một phần tâm khớp</strong></div>
         <div><span>Hành động</span><strong>Kiểm lại v=1 và đặt theo hướng cẳng tay</strong></div>
@@ -595,7 +561,7 @@ reports/review_partner.md</code></pre>
         <div><dt>COCO-17</dt><dd>Bộ 17 keypoint chuẩn dùng rộng rãi cho bài toán tư thế người.</dd></div>
         <div><dt>Skeleton</dt><dd>Cả cụm 17 điểm của một người, kèm các đoạn nối giữa chúng.</dd></div>
         <div><dt>Sublabel</dt><dd>Tên của từng điểm bên trong skeleton, ví dụ <code>left_knee</code>.</dd></div>
-        <div><dt>Frame</dt><dd>Một ảnh trong task. Task của buổi này có 10 frame, đánh số 0 đến 9.</dd></div>
+        <div><dt>Frame</dt><dd>Một ảnh trong task. Task core của buổi này có 20 frame.</dd></div>
         <div><dt>Job</dt><dd>Phần việc được giao trong một task. Bấm vào job để mở màn hình gán nhãn.</dd></div>
         <div><dt>Shape / Track</dt><dd>Shape là đối tượng trên một ảnh. Track là đối tượng kéo dài qua nhiều frame video — buổi này không dùng.</dd></div>
         <div><dt>Visibility</dt><dd>Trạng thái của một điểm: nhìn thấy, bị che, hay ngoài khung.</dd></div>
@@ -613,7 +579,7 @@ reports/review_partner.md</code></pre>
         <details><summary>Save xong điểm biến mất</summary><p>Mở lại đúng frame đó, kiểm trạng thái Outside và danh sách Objects. Ghi lại số frame cùng tên điểm bị ảnh hưởng.</p></details>
         <details><summary>Export không hiện ra</summary><p>Mở mục <strong>Requests</strong> trên thanh trên cùng, chờ trạng thái <em>Finished</em> rồi tải lại. Đừng đổi sang định dạng khác để né lỗi.</p></details>
         <details><summary>File export không có phần keypoints</summary><p>Bạn đã chọn nhầm <code>COCO 1.0</code> hoặc <code>YOLO 1.1</code>. Export lại bằng <strong>COCO Keypoints 1.0</strong>.</p></details>
-        <details><summary>Công cụ kiểm báo sai tên file</summary><p>Kiểm task có đúng 10 ảnh và tên ảnh giữ nguyên. Sửa từ CVAT hoặc tạo lại task, không sửa file JSON bằng tay.</p></details>
+        <details><summary>Công cụ kiểm báo sai tên file</summary><p>Kiểm task core có đúng 20 ảnh và tên ảnh giữ nguyên. Sửa từ CVAT hoặc tạo lại task, không sửa file JSON bằng tay.</p></details>
         <details><summary>Không mở được CVAT ở localhost:8080</summary><p>Kiểm CVAT đã chạy chưa bằng <code>docker compose up -d</code> trong thư mục cài đặt, rồi thử lại sau khoảng một phút.</p></details>
       </div>
     </section>
@@ -643,7 +609,6 @@ reports/review_partner.md</code></pre>
       <a href="GUIDE.md">Bản chữ</a>
       <a href="GUIDE.md">Lộ trình chi tiết</a>
       <a href="RUBRIC.md">Thang điểm</a>
-      <a href="DATA_GOVERNANCE.md">Data governance</a>
     </nav>
   </footer>
 </body>

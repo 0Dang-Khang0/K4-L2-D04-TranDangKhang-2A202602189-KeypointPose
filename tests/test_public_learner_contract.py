@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import csv
 import html.parser
 import json
 import subprocess
@@ -27,28 +26,22 @@ class LocalReferenceParser(html.parser.HTMLParser):
 
 
 class PublicLearnerContractTest(unittest.TestCase):
-    def test_three_data_sets_have_their_declared_counts(self) -> None:
+    def test_core_route_has_train_and_read_only_test_sets(self) -> None:
         train_images = sorted((ROOT / "dataset/images/train").glob("*.jpg"))
         test_images = sorted((ROOT / "dataset/images/test").glob("*.jpg"))
         test_labels = sorted((ROOT / "dataset/labels/test").glob("*.txt"))
-        cabin_images = sorted((ROOT / "data/images").glob("*.jpg"))
         train_labels = list((ROOT / "dataset/labels/train").glob("*.txt"))
 
         self.assertEqual(len(train_images), 20)
         self.assertEqual(len(test_images), 10)
         self.assertEqual(len(test_labels), 10)
-        self.assertEqual(len(cabin_images), 10)
         self.assertEqual(train_labels, [])
+        self.assertFalse((ROOT / "data").exists())
+        self.assertFalse((ROOT / "scripts").exists())
+        self.assertTrue((ROOT / "assets/schema/coco17-cvat-skeleton.svg").is_file())
+        self.assertTrue((ROOT / "assets/schema/coco17-keypoints.json").is_file())
 
-    def test_cabin_manifest_matches_the_shipped_files(self) -> None:
-        with (ROOT / "data/image-manifest.csv").open(encoding="utf-8", newline="") as source:
-            rows = list(csv.DictReader(source))
-        actual = sorted(path.name for path in (ROOT / "data/images").glob("*.jpg"))
-
-        self.assertEqual(len(rows), 10)
-        self.assertEqual(sorted(row["filename"] for row in rows), actual)
-
-    def test_entry_points_state_one_core_and_an_optional_cabin_pack(self) -> None:
+    def test_entry_points_state_one_core_route_only(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         guide = (ROOT / "GUIDE.md").read_text(encoding="utf-8")
         rubric = (ROOT / "RUBRIC.md").read_text(encoding="utf-8")
@@ -59,14 +52,22 @@ class PublicLearnerContractTest(unittest.TestCase):
 
         self.assertIn("Core: 20 ảnh chưa nhãn", readme)
         self.assertIn("Test: 10 ảnh đã có nhãn", readme)
-        self.assertIn("Luyện cabin: 10 ảnh", readme)
         self.assertIn("task core 20 ảnh", guide)
         self.assertIn('class="scope-map"', html)
         self.assertIn("20 ảnh core", html)
         self.assertIn("10 ảnh test", html)
-        self.assertIn("10 ảnh cabin", html)
+        self.assertIn("8 artifact", html)
         self.assertNotIn("Task B", learner_surfaces)
         self.assertNotIn("face_hand", learner_surfaces)
+        for prohibited in (
+            "cabin",
+            "data/images",
+            "DATA_GOVERNANCE",
+            "audit-data-pack",
+            "GENERATION_RECORD",
+            "image-manifest",
+        ):
+            self.assertNotIn(prohibited.lower(), learner_surfaces.lower())
         self.assertFalse((ROOT / "annotations/face_hand").exists())
 
     def test_local_html_references_resolve(self) -> None:
@@ -79,17 +80,24 @@ class PublicLearnerContractTest(unittest.TestCase):
                 continue
             self.assertTrue((ROOT / parsed.path).exists(), reference)
 
-    def test_notebook_and_cabin_audit_run(self) -> None:
+    def test_notebook_parses_and_test_set_validates(self) -> None:
         json.loads((ROOT / "notebooks/day4_pose_finetune_yolo26.ipynb").read_text(encoding="utf-8"))
         result = subprocess.run(
-            [sys.executable, "scripts/audit-data-pack.py"],
+            [
+                sys.executable,
+                "tools/check_pose_labels.py",
+                "--images",
+                "dataset/images/test",
+                "--labels",
+                "dataset/labels/test",
+            ],
             cwd=ROOT,
             check=False,
             capture_output=True,
             text=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("PASS", result.stdout)
+        self.assertIn("ĐẠT định dạng", result.stdout)
 
 
 if __name__ == "__main__":

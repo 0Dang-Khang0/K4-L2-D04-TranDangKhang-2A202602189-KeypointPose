@@ -80,8 +80,7 @@ Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
 5. Ảnh bạn gán tệ nhất có *cũng* là ảnh model đoán tệ nhất không? Nếu có, điều đó
    nói gì về bức ảnh đó?
 
-## 5. Bài luyện cabin (tùy chọn)
+## 5. Một rule evidence bạn đã dùng
 
-Nếu bạn làm bộ luyện cabin: vì sao một khuôn mặt đã bị privacy mask không còn đủ bằng chứng
-để gán toạ độ facial keypoint? Viết 3-5 câu, và nêu vì sao bộ này không được trộn vào train/test
-của route chính.
+Chọn một keypoint trong ảnh core mà bạn phải quyết định giữa `v=1` và `v=0`. Nêu ảnh, người,
+khớp, bằng chứng nhìn thấy và lý do chọn trạng thái đó trong 3-5 câu.
