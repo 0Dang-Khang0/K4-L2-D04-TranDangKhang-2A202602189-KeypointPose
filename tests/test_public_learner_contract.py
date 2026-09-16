@@ -81,7 +81,13 @@ class PublicLearnerContractTest(unittest.TestCase):
             self.assertTrue((ROOT / parsed.path).exists(), reference)
 
     def test_notebook_parses_and_test_set_validates(self) -> None:
-        json.loads((ROOT / "notebooks/day4_pose_finetune_yolo26.ipynb").read_text(encoding="utf-8"))
+        notebook = json.loads((ROOT / "notebooks/day4_pose_finetune_yolo26.ipynb").read_text(encoding="utf-8"))
+        self.assertTrue(all(not cell.get("outputs") for cell in notebook["cells"] if cell["cell_type"] == "code"))
+        source = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
+        self.assertIn('REPO_URL = ""', source)
+        self.assertIn("subprocess.run(['git', 'clone', '--depth', '1'", source)
+        self.assertNotIn("shutil.rmtree", source)
+        self.assertNotIn("<>>>", source)
         result = subprocess.run(
             [
                 sys.executable,

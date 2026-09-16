@@ -191,12 +191,17 @@ sửa gì, điểm sau.
 
 ## Chặng 6 - Colab: fine-tune và đánh giá (3:10-3:50)
 
-1. Nén cả thư mục `Day4-Lab/` (bỏ `gold/` ra - notebook không được dùng gold để train),
-   upload lên Colab hoặc mount Drive. Bật GPU: Runtime -> Change runtime type -> T4.
-2. Mở `notebooks/day4_pose_finetune_yolo26.ipynb`, Run all.
+1. Chọn một cách đưa bài của bạn lên Colab (bỏ `gold/` ra - notebook không được dùng gold để train):
+   - **Khuyến nghị:** commit và push nhãn/export/báo cáo vào fork của bạn, rồi dán URL HTTPS của fork
+     vào `REPO_URL` ở cell 0 của notebook.
+   - **Thay thế:** nén/upload hoặc mount thư mục `Day4-Lab/`.
+   Bật GPU: Runtime -> Change runtime type -> T4.
+2. Mở `notebooks/day4_pose_finetune_yolo26.ipynb`, chạy từ cell 0 xuống dưới. Cell 0 không xoá hoặc
+   ghi đè thư mục nào.
 3. Notebook sẽ: kiểm nhãn -> đo model gốc trên tập test -> fine-tune trên 20 ảnh của bạn
    -> đo lại -> vẽ kết quả -> so nhãn của bạn với model.
-4. Tải `outputs/eval_model.json` về, commit.
+4. Nếu dùng cách upload/mount, tải `outputs/eval_model.json` về rồi commit. Nếu clone fork, file đã ở
+   `Day4-Lab/outputs/`; commit và push nó từ máy của bạn sau khi tải về.
 
 20 ảnh là quá ít để ra một model dùng được. Con số đáng đọc là **chênh lệch** trước/sau,
 và **kiểu sai** bạn nhìn thấy ở phần visualize - không phải giá trị mAP tuyệt đối.
