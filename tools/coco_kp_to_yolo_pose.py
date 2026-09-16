@@ -73,14 +73,13 @@ def main() -> int:
                 + ", ".join(c["name"] for c in person_categories)
             )
     else:
-        # Ưu tiên bộ đúng 17 điểm. Project CVAT của lab có cả 'hand' (21 điểm) và
-        # 'face' (5 điểm), nên "lấy cái đầu tiên" là không đủ chắc.
+        # Chỉ lấy skeleton đúng 17 điểm; không dựa vào thứ tự category trong export.
         matching = [c for c in person_categories if len(c["keypoints"]) == NUM_KEYPOINTS]
         if not matching:
             raise SystemExit(
                 "Không có skeleton label nào đúng 17 điểm. Có trong file: "
                 + ", ".join(f"{c['name']} ({len(c['keypoints'])} điểm)" for c in person_categories)
-                + "\nBộ face/hand nộp riêng, không chuyển bằng script này."
+                + "\nHãy export lại task core với skeleton `person` 17 điểm."
             )
         if len(matching) > 1:
             raise SystemExit(
@@ -91,7 +90,7 @@ def main() -> int:
         category = matching[0]
         if len(person_categories) > 1:
             print(f"File có {len(person_categories)} skeleton label, đã chọn "
-                  f"'{category['name']}' (bộ 17 điểm). Bộ face/hand nộp riêng.")
+                  f"'{category['name']}' (bộ 17 điểm).")
     order = build_order(category)
 
     images = {image["id"]: image for image in document["images"]}

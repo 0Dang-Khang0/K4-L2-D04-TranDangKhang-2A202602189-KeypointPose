@@ -16,6 +16,20 @@ phần ba của nhãn, và nó quyết định khớp đó có được tính đ
    -> Colab: fine-tune YOLO26-Pose -> visualize -> đánh giá
 ```
 
+## Phạm vi dữ liệu — đọc trước khi tạo task
+
+Lab có **một route bắt buộc**: 20 ảnh `person` COCO-17. Ba bộ dưới đây có vai trò khác nhau;
+không đổi chỗ cho nhau.
+
+| Bộ dữ liệu | Ở đâu | Bạn làm gì | Có train / nộp? |
+| --- | --- | --- | --- |
+| **Core: 20 ảnh chưa nhãn** | `dataset/images/train/` | Tạo một task CVAT `person` 17 điểm, gán tất cả người trong ảnh, export và chuyển thành nhãn YOLO Pose | **Có** |
+| **Test: 10 ảnh đã có nhãn** | `dataset/images/test/`, `dataset/labels/test/` | Chỉ dùng để đánh giá model trong notebook | **Không sửa, không train** |
+| **Luyện cabin: 10 ảnh** | `data/images/` | Luyện visibility/privacy theo hướng dẫn HTML nếu còn thời gian | **Không train, không test, không nộp** |
+
+Không có bài hand/face trong bản phát hành này. Đừng tự tạo skeleton thứ hai hoặc thêm thư mục
+export thứ hai: repo chưa phát hành input và schema có thể kiểm chứng cho phần đó.
+
 ## Mục tiêu học tập
 
 Sau lab, bạn có thể:
@@ -35,7 +49,6 @@ Sau lab, bạn có thể:
 | --- | --- |
 | `dataset/labels/train/*.txt` | nhãn 20 ảnh train, định dạng Ultralytics YOLO Pose (56 số/dòng) |
 | `annotations/coco_keypoints/person_keypoints_default.json` | đúng bản export **COCO Keypoints 1.0** từ CVAT |
-| `annotations/face_hand/` | bộ thứ hai: 21 điểm bàn tay + 5 điểm mặt, cho 5 ảnh (export riêng) |
 | `reports/visibility_report.md`, `outputs/visibility_report.json` | bảng đếm cờ theo từng khớp |
 | `GUIDELINE_MINI.md` | luật của nhóm bạn + ít nhất ba ca mơ hồ đã gặp và cách quyết |
 | `outputs/eval_vs_gold.json` | kết quả chấm với gold (sau khi protected release mở) |
@@ -61,7 +74,7 @@ Day4-Lab/
   dataset/labels/train/   nhãn của bạn đặt ở đây (đang trống)
   dataset/labels/test/    nhãn phát sẵn - KHÔNG sửa, KHÔNG dùng để train
   gold/                   trống; protected release đặt gold của train ở đây tại mốc 2:30
-  annotations/            bản export gốc từ CVAT (COCO Keypoints + bộ face/hand)
+  annotations/            bản export gốc COCO Keypoints của 20 ảnh core
   tools/                  check / visibility / evaluate / visualize / convert
   notebooks/              notebook Colab: fine-tune YOLO26-Pose + đánh giá
   reports/                mẫu báo cáo và reviewer checklist

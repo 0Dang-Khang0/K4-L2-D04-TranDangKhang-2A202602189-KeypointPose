@@ -80,7 +80,8 @@ Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
 5. Ảnh bạn gán tệ nhất có *cũng* là ảnh model đoán tệ nhất không? Nếu có, điều đó
    nói gì về bức ảnh đó?
 
-## 5. Một câu cho buổi sau
+## 5. Bài luyện cabin (tùy chọn)
 
-Slide 13 nói: trong cabin, khuôn mặt là **tín hiệu** - không thể làm mờ như dữ liệu
-ngoài phố. Vậy bảo vệ người trong ảnh bằng cách nào? Viết 3-5 câu.
+Nếu bạn làm bộ luyện cabin: vì sao một khuôn mặt đã bị privacy mask không còn đủ bằng chứng
+để gán toạ độ facial keypoint? Viết 3-5 câu, và nêu vì sao bộ này không được trộn vào train/test
+của route chính.

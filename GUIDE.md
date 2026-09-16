@@ -7,7 +7,7 @@ sau khi cả lớp đã khoá nhãn.
 | --- | --- | --- |
 | 0:00-0:20 | 1 | Dựng skeleton label, tạo task CVAT |
 | 0:20-0:40 | 2 | Warm-up: gán 2 ảnh, tự soi bằng `visualize_pose.py` |
-| 0:40-2:10 | 3 | Gán 18 ảnh còn lại + bộ face/hand cho 5 ảnh |
+| 0:40-2:10 | 3 | Gán 18 ảnh core còn lại |
 | 2:10-2:30 | 4 | Ba lượt kiểm, visibility report, kiểm chéo, **khoá nhãn** |
 | 2:30-3:10 | 5 | Nhận gold, chấm bằng OKS, rework |
 | 3:10-3:50 | 6 | Colab: fine-tune, visualize, đánh giá |
@@ -17,37 +17,27 @@ sau khi cả lớp đã khoá nhãn.
 
 ## Chặng 1 - Dựng skeleton label (0:00-0:20)
 
-**Làm một lần, dùng cho cả hai task.** Topology bị khoá ngay khi task được tạo:
+**Làm một lần cho task core 20 ảnh.** Topology bị khoá ngay khi task được tạo:
 đặt thiếu một điểm hay sai thứ tự là làm lại cả task từ đầu.
 
 **Đừng đặt tay 17 điểm.** Gõ tay 17 cái tên là 17 cơ hội gõ sai, và sai một chữ
 trong `left_wrist` thì `coco_kp_to_yolo_pose.py` báo lỗi, bạn phải export lại.
-Có ba đường, chọn đường nào có sẵn trên CVAT bạn đang dùng:
+Repo đã có hai asset đúng contract; chọn một trong hai cách sau:
 
-**Cách A — dán JSON (nhanh nhất, chạy ở mọi bản CVAT).** Gói tài sản lớp học có file
-`labels_day4.json`.
+**Cách A — upload SVG (nhanh nhất).** Dùng file
+`data/schema/coco17-cvat-skeleton.svg`.
 
-1. Tạo **Project** mới → ở khung Labels, mở tab **Raw**.
-2. Dán toàn bộ nội dung `labels_day4.json` vào, bấm **Done**.
-3. Xong: có luôn cả ba skeleton `person` (17 điểm), `hand` (21), `face` (5),
-   đúng tên đúng thứ tự COCO.
-4. Tạo **Task** bên trong project đó và upload 20 ảnh `dataset/images/train/`.
-
-**Cách B — upload file `.SVG`** (đúng cách slide 29 mô tả). Gói tài sản lớp học có
-`skeleton_person_17.svg`.
-
-1. Ở khung Labels, bấm **Setup skeleton**.
-2. Trong màn hình đó, bấm nút **Upload a skeleton from SVG** (icon mũi tên lên,
-   góc trên bên phải khung vẽ) và chọn file `.svg`.
+1. Tạo **Project** mới → ở khung Labels, bấm **Setup skeleton**.
+2. Bấm **Upload a skeleton from SVG** và chọn file `.svg` trên.
 3. Đặt tên label là `person`, bấm **Continue**/**Done**.
-4. Lặp lại cho `skeleton_hand_21.svg` và `skeleton_face_5.svg` nếu cần bộ face/hand.
+4. Tạo **một Task** trong project đó và upload 20 ảnh `dataset/images/train/`.
 
-**Cách C — `From model -> Human pose estimation`.** CVAT dựng sẵn 17 điểm đúng
-chuẩn. **Chỉ có trên app.cvat.ai** hoặc bản self-hosted đã cài serverless (Nuclio);
-trên CVAT cài trần thì danh sách model rỗng và nút này không dùng được.
+**Cách B — dựng từ JSON đã phát hành.** Nếu CVAT không nhận SVG, mở
+`data/schema/coco17-keypoints.json` để đọc đúng 17 tên và 19 cạnh, rồi dựng trong
+Skeleton Configurator.
 
 Dù đi đường nào, sau khi xong hãy vào **Setup skeleton → Download skeleton as SVG**
-và cất file lại. Mọi task sau chỉ việc Upload lại — kể cả task buổi tới.
+và đối chiếu tên/thứ tự với asset đã phát hành trước khi tạo task.
 
 Thứ tự đúng, từ đầu xuống chân, trái trước phải sau:
 
@@ -124,22 +114,6 @@ Luật bắt buộc:
    Nếu bạn thấy một ca mình phân vân, đó là một ca mơ hồ thật - ghi vào `GUIDELINE_MINI.md`.
 5. **Hông**: không nhìn thấy được trên bất kỳ người mặc quần áo nào. Nó là ước lượng giải phẫu.
    Nhóm bạn phải thống nhất một luật và ghi vào `GUIDELINE_MINI.md`, kèm một ảnh mẫu.
-
-### Bộ thứ hai: face/hand cho 5 ảnh
-
-Dựng **một skeleton label riêng**, topology riêng, **không trộn** vào bộ 17 điểm:
-
-- 21 điểm một bàn tay (MediaPipe / COCO-WholeBody)
-- 5 điểm mặt rút gọn: hai mắt, mũi, hai khoé miệng
-
-Tạo một task CVAT thứ hai với 5 ảnh bạn chọn (ưu tiên ảnh thấy rõ bàn tay trên tay lái).
-Export riêng, đặt vào `annotations/face_hand/`. Bộ này **không** được chấm bằng OKS -
-không có gold cho nó - nhưng nó nằm trong reviewer checklist và trong rubric.
-
-> Bàn tay một bên đã là 21 điểm, hơn cả bộ thân 17 điểm. Đó là lý do bộ này chỉ làm
-> 5 ảnh, không phải 20.
-
----
 
 ## Chặng 4 - Ba lượt kiểm rồi khoá nhãn (2:10-2:30)
 

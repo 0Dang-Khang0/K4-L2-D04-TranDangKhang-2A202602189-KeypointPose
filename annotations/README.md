@@ -6,8 +6,7 @@
 
 ```text
 annotations/
-  coco_keypoints/     Export -> COCO Keypoints 1.0   (bộ 17 điểm thân, 20 ảnh)
-  face_hand/          Export -> COCO Keypoints 1.0   (bộ 21 điểm tay + 5 điểm mặt, 5 ảnh)
+  coco_keypoints/     Export -> COCO Keypoints 1.0   (bộ 17 điểm thân, 20 ảnh core)
 ```
 
 ## Bộ 17 điểm thân
@@ -31,14 +30,3 @@ python3 tools/coco_kp_to_yolo_pose.py \
 
 Nếu file không có mảng `keypoints` nào: bạn đã chọn nhầm **COCO 1.0** hoặc **YOLO 1.1**.
 Hai định dạng đó chỉ xuất box — 17 điểm biến mất, không lỗi, không cảnh báo.
-
-## Bộ face/hand
-
-Đây là **một skeleton label riêng, một task riêng**, không trộn vào bộ 17 điểm:
-
-- 21 điểm một bàn tay (MediaPipe / COCO-WholeBody)
-- 5 điểm mặt rút gọn: mắt trái, mắt phải, mũi, khoé miệng trái, khoé miệng phải
-
-Export riêng, chép vào `annotations/face_hand/`. Bộ này không chấm bằng OKS (không có
-gold), nhưng nằm trong reviewer checklist và rubric. `coco_kp_to_yolo_pose.py` chỉ xử lý
-bộ 17 điểm — chạy nó trên bộ face/hand sẽ báo lỗi số điểm, và đó là hành vi đúng.

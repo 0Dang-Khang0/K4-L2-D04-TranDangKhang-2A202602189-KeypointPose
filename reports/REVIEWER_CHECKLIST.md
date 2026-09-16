@@ -21,9 +21,8 @@ python3 tools/visibility_report.py --labels dataset/labels/train --compare <bài
 | 7 | Export đúng **COCO Keypoints 1.0**: mảng `keypoints` có 51 số mỗi người | ☐ | |
 | 8 | Bản YOLO Pose: mỗi dòng 56 số, `kpt_shape: [17, 3]` | ☐ | |
 | 9 | Visibility report đã nộp, và hai bảng đã được đặt cạnh nhau | ☐ | |
-| 10 | Bộ face/hand: 5 ảnh, skeleton label **riêng**, không trộn vào bộ 17 điểm | ☐ | |
-| 11 | Mọi ca không rõ đều được ghi trong `GUIDELINE_MINI.md` | ☐ | |
-| 12 | `check_pose_labels.py` chạy 0 lỗi | ☐ | |
+| 10 | Mọi ca không rõ đều được ghi trong `GUIDELINE_MINI.md` | ☐ | |
+| 11 | `check_pose_labels.py` chạy 0 lỗi | ☐ | |
 
 ## Lỗi tìm được
 

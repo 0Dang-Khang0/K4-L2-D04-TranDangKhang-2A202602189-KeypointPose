@@ -8,8 +8,7 @@
 | Cờ visibility | khớp bị che dùng `v = 1` **và vẫn có chấm**; `v = 0` chỉ dùng cho khớp ra ngoài khung; không dùng Hidden | 15 |
 | Độ chính xác vị trí | `OKS trung bình` và `OKS@0.75` trong `outputs/eval_vs_gold.json` | 10 |
 | Visibility report | `reports/visibility_report.md` + bản so với bạn cùng nhóm, có nhận xét khớp nào lệch nhiều nhất và vì sao | 10 |
-| Bộ face/hand | 5 ảnh, 21 điểm bàn tay + 5 điểm mặt, **skeleton label riêng**, export riêng ở `annotations/face_hand/` | 5 |
-| Mini guideline | `GUIDELINE_MINI.md` nêu luật cho hông, cho tai bị tóc/mũ che, cho người bị cắt ở mép ảnh, và ít nhất ba ca mơ hồ có lý do | 8 |
+| Mini guideline | `GUIDELINE_MINI.md` nêu luật cho hông, cho tai bị tóc/mũ che, cho người bị cắt ở mép ảnh, và ít nhất ba ca mơ hồ có lý do | 13 |
 | Kiểm chéo | `reports/review_partner.md`: mỗi lỗi ghi rõ ảnh / người thứ mấy / khớp nào / lỗi gì / sửa thế nào, kèm reviewer checklist đã điền | 7 |
 
 ## Cổng bắt buộc
@@ -21,7 +20,6 @@
 - Không chạy `check_pose_labels.py`, hoặc nộp file còn lỗi định dạng: tối đa 49 điểm.
 - Không có `outputs/eval_vs_gold.json`: tối đa 69 điểm.
 - Không có `reports/visibility_report.md`: trừ 10 điểm - đó là một trong ba deliverable.
-- Thiếu bộ face/hand: trừ 5 điểm.
 - **Sửa gold sau khi nhận**, sửa `dataset/labels/test/`, hoặc truy ngược dataset nguồn
   để lấy nhãn: bài không được chấm; áp dụng theo quy định học phần.
 - **Chạy model trước khi khoá nhãn** rồi sửa nhãn theo model: coi như không có phần
